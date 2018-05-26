@@ -1,0 +1,971 @@
+package de.x8bit.Fantasya.Host.ZAT.Battle.util;
+
+import java.awt.Color;
+import java.text.NumberFormat;
+import javax.swing.UIManager;
+
+/**
+ * GUI für das Ausprobieren von Kampf-Konstellationen mit gezielten Angriffen.
+ * @author hb
+ */
+public class ZielChancenRechner extends javax.swing.JFrame {
+    protected ZielChancenModell modell = new ZielChancenModell();
+    int twTaktik = 5;
+    int twWaffe = 5;
+    int twWahrnehmung = 5;
+    int twTarnung = 5;
+    int nZiele = 1;
+    int nAlle = 100;
+
+    /** Creates new form ZielChancenRechner */
+    public ZielChancenRechner() {
+        initComponents();
+    }
+
+    protected void updateModell() {
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMinimumFractionDigits(2);
+        nf.setMaximumFractionDigits(2);
+
+        // Verhältnis Ziel / alle beim Feind:
+        double ratio = (double)getNZiele() / (double)getNAlle();
+        jLabelLogZielanteil.setText(nf.format(Math.log10(ratio)));
+
+        jLabelZielSchwierigkeit.setText(nf.format(Math.log10(ratio) * modell.getZielSchwierigkeit()));
+        jLabelAngriffsSchwierigkeit.setText(nf.format(modell.getAusfallSchwierigkeit(ratio)));
+
+
+        // Ausfallchance:
+        float ausfallP = (float)modell.getAusfallChance(getTwTaktik() + getTwWaffe() - getTwTarnung(), ratio);
+        nf = NumberFormat.getPercentInstance();
+        nf.setMaximumFractionDigits(1);
+        if (ausfallP < 0.1d) nf.setMaximumFractionDigits(2);
+        if (ausfallP < 0.01d) nf.setMaximumFractionDigits(3);
+
+        jLabelAusfallP.setText(nf.format(ausfallP));
+        // Hintergrundfarbe:
+        float rotFaktor = 1;
+        if (ausfallP < 0.5) rotFaktor -= (0.5d - ausfallP) * 2d;
+        float gruenFaktor = 1;
+        if (ausfallP > 0.5f) gruenFaktor -= (ausfallP - 0.5f) * 2f;
+        Color c = new Color(rotFaktor, gruenFaktor, 0f);
+        jLabelAusfallP.setBackground(c);
+
+
+
+
+
+        // Zielchancen:
+        float zielP = (float)modell.getZielChance(getTwWahrnehmung() + getTwWaffe(), ratio);
+
+
+
+        // Kombinierte Wahrscheinlichkeit: Angriff findet statt, Ziel wird getroffen:
+        float kombinierteP = (1f - ausfallP) * zielP;
+
+        // Wenn das Zielen nicht klappt, der Angriff aber schon,
+        // dann treffen wir mit einer Wahrscheinlichkeit von p = ratio
+        // aus versehen unser Wunsch-Opfer!
+        float verbleibendeZufallsTrefferP = (1f - ausfallP) * (1f - zielP) * (float)ratio;
+
+        nf.setMaximumFractionDigits(1);
+        if (ratio < 0.1d) nf.setMaximumFractionDigits(2);
+        if (ratio < 0.01d) nf.setMaximumFractionDigits(3);
+        String normaleChance = nf.format(ratio);
+
+        nf.setMaximumFractionDigits(1);
+        if (kombinierteP < 0.1d) nf.setMaximumFractionDigits(2);
+        if (kombinierteP < 0.01d) nf.setMaximumFractionDigits(3);
+        String gezielteChance = nf.format(kombinierteP);
+
+        float trefferP2 = kombinierteP + verbleibendeZufallsTrefferP;
+        nf.setMaximumFractionDigits(1);
+        if (trefferP2 < 0.1d) nf.setMaximumFractionDigits(2);
+        if (trefferP2 < 0.01d) nf.setMaximumFractionDigits(3);
+        String kombiniertMitZufallstreffern = nf.format(trefferP2);
+
+
+
+        jLabelTrefferP.setText(gezielteChance);
+        // Hintergrundfarbe:
+        rotFaktor = 1;
+        if (kombinierteP > 0.5f) rotFaktor = (1f - kombinierteP) * 2f;
+        gruenFaktor = 1;
+        if (kombinierteP < 0.5f) gruenFaktor = kombinierteP * 2f;
+        c = new Color(rotFaktor, gruenFaktor, 0f);
+        jLabelTrefferP.setBackground(c);
+
+        // Trefferchance ohne Zielen wäre:
+        jLabelTrefferPOhneZielen.setText(normaleChance);
+
+        // Trefferchance inkl. Zufallstreffern ist:
+        jLabelTrefferP2.setText(kombiniertMitZufallstreffern);
+
+
+
+
+        // Wirkfaktor:
+        double wirkfaktor = trefferP2 / ratio;
+
+        if (wirkfaktor < 1d) {
+            jLabelTrefferP2.setForeground(Color.white);
+            jLabelTrefferP2.setBackground(Color.DARK_GRAY);
+        } else {
+            jLabelTrefferP2.setForeground(Color.black);
+            jLabelTrefferP2.setBackground(Color.white);
+        }
+        
+        nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(0);
+        nf.setMinimumFractionDigits(0);
+        if (wirkfaktor < 100d) nf.setMinimumFractionDigits(1);
+        if (wirkfaktor < 10d) nf.setMinimumFractionDigits(2);
+        if (wirkfaktor < 1d) nf.setMinimumFractionDigits(3);
+        if (wirkfaktor < 0.1d) nf.setMinimumFractionDigits(4);
+        jLabelWirkfaktorOut.setText("\u00d7" + nf.format(wirkfaktor));
+
+        float wfLog = 0;
+        if (wirkfaktor > 1) wfLog = (float)Math.log10(wirkfaktor);
+        if (wfLog > 2) wfLog = 2;
+        rotFaktor = 1f - (wfLog / 2f);
+        gruenFaktor = 1f;
+        Color bg = new Color(rotFaktor, gruenFaktor, 0f);
+        Color fg = Color.black;
+
+        if (wirkfaktor < 1) {
+            bg = Color.darkGray;
+            fg = Color.white;
+        }
+
+        jLabelWirkfaktorOut.setForeground(fg);
+        jLabelWirkfaktorOut.setBackground(bg);
+
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
+
+        jPanel2 = new javax.swing.JPanel();
+        jPanelSpielKonstanten = new javax.swing.JPanel();
+        jTextFieldZielAlpha = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jTextFieldZielBeta = new javax.swing.JTextField();
+        jTextFieldAusfallAlpha = new javax.swing.JTextField();
+        jTextFieldAusfallBeta = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jSliderZielSchwierigkeit = new javax.swing.JSlider();
+        jLabelBasisSchwierigkeit = new javax.swing.JLabel();
+        jPanelAngreifer = new javax.swing.JPanel();
+        jSliderTaktik = new javax.swing.JSlider();
+        jLabel2 = new javax.swing.JLabel();
+        jLabelWaffentalentLbl = new javax.swing.JLabel();
+        jSliderWaffenTalent = new javax.swing.JSlider();
+        jLabel4 = new javax.swing.JLabel();
+        jSliderTalentWahrnehmung = new javax.swing.JSlider();
+        jLabel12 = new javax.swing.JLabel();
+        jLabelWahrnehmungLbl = new javax.swing.JLabel();
+        jLabelTaktikLbl = new javax.swing.JLabel();
+        jPanelSchlachtSituation = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jTextFieldAnzahlZiele = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        jTextFieldAnzahlAndere = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabelLogZielanteil = new javax.swing.JLabel();
+        jLabelZielSchwierigkeit = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabelAngriffsSchwierigkeit = new javax.swing.JLabel();
+        jPanelErgebnisse = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
+        jLabel20 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextPane2 = new javax.swing.JTextPane();
+        jLabelTrefferPOhneZielen = new javax.swing.JLabel();
+        jLabelAusfallP = new javax.swing.JLabel();
+        jLabelTrefferP = new javax.swing.JLabel();
+        jLabelTrefferP2 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabelWirkfaktorOut = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanelVerteidiger = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jSliderTalentTarnung = new javax.swing.JSlider();
+        jLabelEchoTalentTarnung = new javax.swing.JLabel();
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("[Fantasya] Chancenrechner für gezielte Angriffe");
+        setName("MainFrame"); // NOI18N
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
+
+        jPanelSpielKonstanten.setBackground(new java.awt.Color(204, 204, 204));
+        jPanelSpielKonstanten.setBorder(javax.swing.BorderFactory.createTitledBorder("Spielkonstanten (im Spiel selbst nicht beeinflussbar)"));
+        jPanelSpielKonstanten.setFocusable(false);
+
+        jTextFieldZielAlpha.setBackground(new java.awt.Color(240, 240, 240));
+        jTextFieldZielAlpha.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldZielAlpha.setText("0");
+        jTextFieldZielAlpha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldZielAlphaKeyReleased(evt);
+            }
+        });
+
+        jLabel5.setText("alpha:");
+
+        jLabel6.setText("beta:");
+
+        jTextFieldZielBeta.setBackground(new java.awt.Color(240, 240, 240));
+        jTextFieldZielBeta.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldZielBeta.setText("3");
+        jTextFieldZielBeta.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldZielBetaKeyReleased(evt);
+            }
+        });
+
+        jTextFieldAusfallAlpha.setBackground(new java.awt.Color(240, 240, 240));
+        jTextFieldAusfallAlpha.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldAusfallAlpha.setText("0");
+        jTextFieldAusfallAlpha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldAusfallAlphaKeyReleased(evt);
+            }
+        });
+
+        jTextFieldAusfallBeta.setBackground(new java.awt.Color(240, 240, 240));
+        jTextFieldAusfallBeta.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldAusfallBeta.setText("5");
+        jTextFieldAusfallBeta.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldAusfallBetaKeyReleased(evt);
+            }
+        });
+
+        jLabel8.setText("alpha:");
+
+        jLabel9.setText("beta:");
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel7.setText("Ausfall:");
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel10.setText("Zielen:");
+
+        jLabel11.setText("Schwierigkeit:");
+
+        jSliderZielSchwierigkeit.setBackground(new java.awt.Color(204, 204, 204));
+        jSliderZielSchwierigkeit.setMaximum(2000);
+        jSliderZielSchwierigkeit.setMinimum(50);
+        jSliderZielSchwierigkeit.setValue(1000);
+        jSliderZielSchwierigkeit.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSliderZielSchwierigkeitStateChanged(evt);
+            }
+        });
+
+        jLabelBasisSchwierigkeit.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelBasisSchwierigkeit.setLabelFor(jSliderZielSchwierigkeit);
+        jLabelBasisSchwierigkeit.setText("~3,32");
+
+        javax.swing.GroupLayout jPanelSpielKonstantenLayout = new javax.swing.GroupLayout(jPanelSpielKonstanten);
+        jPanelSpielKonstanten.setLayout(jPanelSpielKonstantenLayout);
+        jPanelSpielKonstantenLayout.setHorizontalGroup(
+            jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSpielKonstantenLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelSpielKonstantenLayout.createSequentialGroup()
+                        .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jTextFieldAusfallAlpha)
+                            .addComponent(jTextFieldAusfallBeta, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel7))
+                .addGap(68, 68, 68)
+                .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSliderZielSchwierigkeit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+                    .addComponent(jLabel10)
+                    .addGroup(jPanelSpielKonstantenLayout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                        .addComponent(jTextFieldZielAlpha, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSpielKonstantenLayout.createSequentialGroup()
+                        .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                        .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabelBasisSchwierigkeit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jTextFieldZielBeta, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))))
+                .addContainerGap())
+        );
+        jPanelSpielKonstantenLayout.setVerticalGroup(
+            jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSpielKonstantenLayout.createSequentialGroup()
+                .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldZielAlpha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(jTextFieldAusfallAlpha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldZielBeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jTextFieldAusfallBeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelSpielKonstantenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabelBasisSchwierigkeit))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jSliderZielSchwierigkeit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jPanelAngreifer.setBorder(javax.swing.BorderFactory.createTitledBorder("Talente der Angreifer"));
+
+        jSliderTaktik.setMajorTickSpacing(1);
+        jSliderTaktik.setMaximum(25);
+        jSliderTaktik.setMinorTickSpacing(1);
+        jSliderTaktik.setSnapToTicks(true);
+        jSliderTaktik.setValue(5);
+        jSliderTaktik.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSliderTaktikStateChanged(evt);
+            }
+        });
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setLabelFor(jSliderTaktik);
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jSliderTaktik, org.jdesktop.beansbinding.ELProperty.create("${value}"), jLabel2, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jLabelWaffentalentLbl.setLabelFor(jSliderWaffenTalent);
+        jLabelWaffentalentLbl.setText("TW für die Waffe");
+
+        jSliderWaffenTalent.setMajorTickSpacing(1);
+        jSliderWaffenTalent.setMaximum(25);
+        jSliderWaffenTalent.setMinorTickSpacing(1);
+        jSliderWaffenTalent.setSnapToTicks(true);
+        jSliderWaffenTalent.setValue(5);
+        jSliderWaffenTalent.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSliderWaffenTalentStateChanged(evt);
+            }
+        });
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setLabelFor(jSliderWaffenTalent);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jSliderWaffenTalent, org.jdesktop.beansbinding.ELProperty.create("${value}"), jLabel4, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jSliderTalentWahrnehmung.setMajorTickSpacing(1);
+        jSliderTalentWahrnehmung.setMaximum(25);
+        jSliderTalentWahrnehmung.setMinorTickSpacing(1);
+        jSliderTalentWahrnehmung.setSnapToTicks(true);
+        jSliderTalentWahrnehmung.setValue(5);
+        jSliderTalentWahrnehmung.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSliderTalentWahrnehmungStateChanged(evt);
+            }
+        });
+
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel12.setLabelFor(jSliderTalentWahrnehmung);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jSliderTalentWahrnehmung, org.jdesktop.beansbinding.ELProperty.create("${value}"), jLabel12, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jLabelWahrnehmungLbl.setLabelFor(jSliderTalentWahrnehmung);
+        jLabelWahrnehmungLbl.setText("TW Wahrnehmung");
+
+        jLabelTaktikLbl.setLabelFor(jSliderTaktik);
+        jLabelTaktikLbl.setText("TW Taktik");
+
+        javax.swing.GroupLayout jPanelAngreiferLayout = new javax.swing.GroupLayout(jPanelAngreifer);
+        jPanelAngreifer.setLayout(jPanelAngreiferLayout);
+        jPanelAngreiferLayout.setHorizontalGroup(
+            jPanelAngreiferLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAngreiferLayout.createSequentialGroup()
+                .addGroup(jPanelAngreiferLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabelWaffentalentLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                    .addComponent(jLabelWahrnehmungLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                    .addComponent(jLabelTaktikLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                .addGroup(jPanelAngreiferLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSliderTalentWahrnehmung, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                    .addComponent(jSliderTaktik, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                    .addComponent(jSliderWaffenTalent, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE))
+                .addGroup(jPanelAngreiferLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)))
+        );
+        jPanelAngreiferLayout.setVerticalGroup(
+            jPanelAngreiferLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAngreiferLayout.createSequentialGroup()
+                .addGroup(jPanelAngreiferLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSliderTaktik, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(jLabelTaktikLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+                .addGroup(jPanelAngreiferLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSliderWaffenTalent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(jLabelWaffentalentLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+                .addGroup(jPanelAngreiferLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSliderTalentWahrnehmung, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(jLabelWahrnehmungLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)))
+        );
+
+        jPanelSchlachtSituation.setBorder(javax.swing.BorderFactory.createTitledBorder("Schlacht-Situation"));
+
+        jLabel14.setText("Anzahl der Feinde:");
+
+        jLabel15.setText("Ziele");
+
+        jTextFieldAnzahlZiele.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldAnzahlZiele.setText("1");
+        jTextFieldAnzahlZiele.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldAnzahlZieleKeyReleased(evt);
+            }
+        });
+
+        jLabel16.setText("Andere");
+
+        jTextFieldAnzahlAndere.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldAnzahlAndere.setText("99");
+        jTextFieldAnzahlAndere.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldAnzahlAndereKeyReleased(evt);
+            }
+        });
+
+        jLabel17.setText("log10(Zielanteil):");
+
+        jLabel18.setText("Zielschwierigkeit:");
+
+        jLabelLogZielanteil.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabelLogZielanteil.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelLogZielanteil.setText("-2");
+
+        jLabelZielSchwierigkeit.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabelZielSchwierigkeit.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelZielSchwierigkeit.setText("-6,64");
+
+        jLabel19.setText("Angriffsschwierigkeit:");
+
+        jLabelAngriffsSchwierigkeit.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabelAngriffsSchwierigkeit.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelAngriffsSchwierigkeit.setText("-6,64");
+
+        javax.swing.GroupLayout jPanelSchlachtSituationLayout = new javax.swing.GroupLayout(jPanelSchlachtSituation);
+        jPanelSchlachtSituation.setLayout(jPanelSchlachtSituationLayout);
+        jPanelSchlachtSituationLayout.setHorizontalGroup(
+            jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSchlachtSituationLayout.createSequentialGroup()
+                .addGroup(jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel14)
+                    .addGroup(jPanelSchlachtSituationLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelSchlachtSituationLayout.createSequentialGroup()
+                                .addGroup(jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel15))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jTextFieldAnzahlAndere)
+                                    .addComponent(jTextFieldAnzahlZiele, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)))
+                            .addComponent(jLabel19))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelAngriffsSchwierigkeit, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)
+                        .addGroup(jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelSchlachtSituationLayout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabelZielSchwierigkeit, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelSchlachtSituationLayout.createSequentialGroup()
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                .addComponent(jLabelLogZielanteil, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(23, Short.MAX_VALUE))
+        );
+        jPanelSchlachtSituationLayout.setVerticalGroup(
+            jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSchlachtSituationLayout.createSequentialGroup()
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(jTextFieldAnzahlZiele, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17)
+                    .addComponent(jLabelLogZielanteil))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(jTextFieldAnzahlAndere, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSchlachtSituationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabelZielSchwierigkeit)
+                    .addComponent(jLabel19)
+                    .addComponent(jLabelAngriffsSchwierigkeit))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanelErgebnisse.setBorder(javax.swing.BorderFactory.createTitledBorder("Ergebnisse"));
+
+        jScrollPane3.setBorder(null);
+
+        jTextPane1.setEditable(false);
+        jTextPane1.setText("Wahrscheinlichkeit, dass der Angriff völlig ausfällt:");
+        jScrollPane3.setViewportView(jTextPane1);
+
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel20.setLabelFor(jLabelTrefferPOhneZielen);
+        jLabel20.setText("(ohne Zielen:)");
+
+        jScrollPane4.setBorder(null);
+
+        jTextPane2.setEditable(false);
+        jTextPane2.setText("Wahrscheinlichkeit, dass eines der gewünschten Ziele getroffen wird:");
+        jScrollPane4.setViewportView(jTextPane2);
+
+        jLabelTrefferPOhneZielen.setBackground(new java.awt.Color(255, 255, 255));
+        jLabelTrefferPOhneZielen.setFont(new java.awt.Font("Tahoma", 0, 14));
+        jLabelTrefferPOhneZielen.setForeground(new java.awt.Color(102, 102, 102));
+        jLabelTrefferPOhneZielen.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTrefferPOhneZielen.setText("50,0%");
+        jLabelTrefferPOhneZielen.setFocusable(false);
+        jLabelTrefferPOhneZielen.setOpaque(true);
+
+        jLabelAusfallP.setBackground(new java.awt.Color(255, 255, 0));
+        jLabelAusfallP.setFont(new java.awt.Font("Tahoma", 1, 14));
+        jLabelAusfallP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelAusfallP.setText("50,0%");
+        jLabelAusfallP.setFocusable(false);
+        jLabelAusfallP.setOpaque(true);
+
+        jLabelTrefferP.setBackground(new java.awt.Color(255, 255, 0));
+        jLabelTrefferP.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelTrefferP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTrefferP.setText("50,0%");
+        jLabelTrefferP.setFocusable(false);
+        jLabelTrefferP.setOpaque(true);
+
+        jLabelTrefferP2.setBackground(new java.awt.Color(255, 255, 255));
+        jLabelTrefferP2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelTrefferP2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTrefferP2.setText("50,0%");
+        jLabelTrefferP2.setFocusable(false);
+        jLabelTrefferP2.setOpaque(true);
+
+        jLabel21.setText("linkl. Zufallstreffer-Chance:");
+
+        jLabelWirkfaktorOut.setBackground(new java.awt.Color(255, 255, 0));
+        jLabelWirkfaktorOut.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelWirkfaktorOut.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelWirkfaktorOut.setText("1×");
+        jLabelWirkfaktorOut.setFocusable(false);
+        jLabelWirkfaktorOut.setOpaque(true);
+
+        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText(" Wirkfaktor:");
+        jLabel3.setOpaque(true);
+
+        javax.swing.GroupLayout jPanelErgebnisseLayout = new javax.swing.GroupLayout(jPanelErgebnisse);
+        jPanelErgebnisse.setLayout(jPanelErgebnisseLayout);
+        jPanelErgebnisseLayout.setHorizontalGroup(
+            jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelErgebnisseLayout.createSequentialGroup()
+                .addGroup(jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelErgebnisseLayout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelAusfallP, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                    .addGroup(jPanelErgebnisseLayout.createSequentialGroup()
+                        .addGroup(jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanelErgebnisseLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel21)
+                            .addComponent(jLabel20)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelTrefferPOhneZielen, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                            .addComponent(jLabelTrefferP, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                            .addComponent(jLabelTrefferP2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                            .addComponent(jLabelWirkfaktorOut, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE))))
+                .addContainerGap())
+        );
+        jPanelErgebnisseLayout.setVerticalGroup(
+            jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelErgebnisseLayout.createSequentialGroup()
+                .addGroup(jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelAusfallP, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelTrefferPOhneZielen, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(jLabel20))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelTrefferP, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelTrefferP2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21))
+                .addGap(18, 18, 18)
+                .addGroup(jPanelErgebnisseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelWirkfaktorOut, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                .addGap(213, 213, 213))
+        );
+
+        jPanelVerteidiger.setBorder(javax.swing.BorderFactory.createTitledBorder("Talente der Verteidiger"));
+
+        jLabel1.setLabelFor(jSliderTalentTarnung);
+        jLabel1.setText("TW Tarnung");
+
+        jSliderTalentTarnung.setMajorTickSpacing(1);
+        jSliderTalentTarnung.setMaximum(25);
+        jSliderTalentTarnung.setMinorTickSpacing(1);
+        jSliderTalentTarnung.setSnapToTicks(true);
+        jSliderTalentTarnung.setValue(5);
+        jSliderTalentTarnung.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSliderTalentTarnungStateChanged(evt);
+            }
+        });
+
+        jLabelEchoTalentTarnung.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jSliderTalentTarnung, org.jdesktop.beansbinding.ELProperty.create("${value}"), jLabelEchoTalentTarnung, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout jPanelVerteidigerLayout = new javax.swing.GroupLayout(jPanelVerteidiger);
+        jPanelVerteidiger.setLayout(jPanelVerteidigerLayout);
+        jPanelVerteidigerLayout.setHorizontalGroup(
+            jPanelVerteidigerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelVerteidigerLayout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                .addComponent(jSliderTalentTarnung, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                .addComponent(jLabelEchoTalentTarnung, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE))
+        );
+        jPanelVerteidigerLayout.setVerticalGroup(
+            jPanelVerteidigerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelVerteidigerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                .addComponent(jLabelEchoTalentTarnung, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                .addComponent(jSliderTalentTarnung, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelAngreifer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelSchlachtSituation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanelVerteidiger, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(1, 1, 1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanelSpielKonstanten, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(1, 1, 1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelErgebnisse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanelErgebnisse, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jPanelSchlachtSituation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelAngreifer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelVerteidiger, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelSpielKonstanten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        bindingGroup.bind();
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jSliderTaktikStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderTaktikStateChanged
+        setTwTaktik(jSliderTaktik.getValue());
+        updateModell();
+    }//GEN-LAST:event_jSliderTaktikStateChanged
+
+    private void jSliderWaffenTalentStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderWaffenTalentStateChanged
+        setTwWaffe(jSliderWaffenTalent.getValue());
+        updateModell();
+    }//GEN-LAST:event_jSliderWaffenTalentStateChanged
+
+    private void jTextFieldAusfallAlphaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldAusfallAlphaKeyReleased
+        try {
+            modell.setAusfallAlpha(Double.parseDouble(jTextFieldAusfallAlpha.getText()));
+            updateModell();
+        } catch (NumberFormatException ex) { }
+    }//GEN-LAST:event_jTextFieldAusfallAlphaKeyReleased
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        updateModell();
+    }//GEN-LAST:event_formWindowOpened
+
+    private void jTextFieldAusfallBetaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldAusfallBetaKeyReleased
+        try {
+            if (jTextFieldAusfallBeta.getBackground().equals(Color.red)) jTextFieldAusfallBeta.setBackground(Color.white);
+            
+            modell.setAusfallBeta(Double.parseDouble(jTextFieldAusfallBeta.getText()));
+            updateModell();
+        } catch (NumberFormatException ex) {
+            jTextFieldAusfallBeta.setBackground(Color.red);
+        }
+    }//GEN-LAST:event_jTextFieldAusfallBetaKeyReleased
+
+    private void jSliderZielSchwierigkeitStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderZielSchwierigkeitStateChanged
+        double basis = Math.pow(10, 1 / ((double)jSliderZielSchwierigkeit.getValue() / 100d));
+
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMinimumFractionDigits(3);
+        nf.setMaximumFractionDigits(3);
+        // jLabelZielSchwierigkeit.setText("~" + nf.format(basis));
+
+        double schwierigkeit = Math.log(10) / Math.log(basis);
+        jLabelBasisSchwierigkeit.setText("~" + nf.format(schwierigkeit));
+
+        modell.setZielSchwierigkeit(schwierigkeit);
+        updateModell();
+    }//GEN-LAST:event_jSliderZielSchwierigkeitStateChanged
+
+    private void jSliderTalentWahrnehmungStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderTalentWahrnehmungStateChanged
+        setTwWahrnehmung(jSliderTalentWahrnehmung.getValue());
+        updateModell();
+    }//GEN-LAST:event_jSliderTalentWahrnehmungStateChanged
+
+    private void jTextFieldZielAlphaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldZielAlphaKeyReleased
+        try {
+            if (jTextFieldZielAlpha.getBackground().equals(Color.red)) jTextFieldZielAlpha.setBackground(Color.white);
+
+            modell.setZielAlpha(Double.parseDouble(jTextFieldZielAlpha.getText()));
+            updateModell();
+        } catch (NumberFormatException ex) {
+            jTextFieldZielAlpha.setBackground(Color.red);
+        }
+    }//GEN-LAST:event_jTextFieldZielAlphaKeyReleased
+
+    private void jTextFieldZielBetaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldZielBetaKeyReleased
+        try {
+            if (jTextFieldZielBeta.getBackground().equals(Color.red)) jTextFieldZielBeta.setBackground(Color.white);
+
+            modell.setZielBeta(Double.parseDouble(jTextFieldZielBeta.getText()));
+            updateModell();
+        } catch (NumberFormatException ex) {
+            jTextFieldZielBeta.setBackground(Color.red);
+        }
+    }//GEN-LAST:event_jTextFieldZielBetaKeyReleased
+
+    private void jTextFieldAnzahlZieleKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldAnzahlZieleKeyReleased
+        try {
+            if (jTextFieldAnzahlZiele.getBackground().equals(Color.red)) jTextFieldAnzahlZiele.setBackground(Color.white);
+
+            this.setNZiele(Integer.parseInt(jTextFieldAnzahlZiele.getText()));
+            updateModell();
+        } catch (NumberFormatException ex) {
+            jTextFieldAnzahlZiele.setBackground(Color.red);
+        }
+    }//GEN-LAST:event_jTextFieldAnzahlZieleKeyReleased
+
+    private void jTextFieldAnzahlAndereKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldAnzahlAndereKeyReleased
+        try {
+            if (jTextFieldAnzahlAndere.getBackground().equals(Color.red)) jTextFieldAnzahlAndere.setBackground(Color.white);
+
+            this.setNAlle(Integer.parseInt(jTextFieldAnzahlAndere.getText()) + this.getNZiele());
+            updateModell();
+        } catch (NumberFormatException ex) {
+            jTextFieldAnzahlAndere.setBackground(Color.red);
+        }
+
+    }//GEN-LAST:event_jTextFieldAnzahlAndereKeyReleased
+
+    private void jSliderTalentTarnungStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderTalentTarnungStateChanged
+        setTwTarnung(jSliderTalentTarnung.getValue());
+        updateModell();
+    }//GEN-LAST:event_jSliderTalentTarnungStateChanged
+
+    /**
+    * @param args the command line arguments
+    */
+    public static void main(String args[]) {
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ZielChancenRechner app = new ZielChancenRechner();
+                app.setVisible(true);
+                // app.jTextFieldAnzahlZiele.setText("1");
+                app.updateModell();
+                app.jSliderZielSchwierigkeitStateChanged(null);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelAngriffsSchwierigkeit;
+    private javax.swing.JLabel jLabelAusfallP;
+    private javax.swing.JLabel jLabelBasisSchwierigkeit;
+    private javax.swing.JLabel jLabelEchoTalentTarnung;
+    private javax.swing.JLabel jLabelLogZielanteil;
+    private javax.swing.JLabel jLabelTaktikLbl;
+    private javax.swing.JLabel jLabelTrefferP;
+    private javax.swing.JLabel jLabelTrefferP2;
+    private javax.swing.JLabel jLabelTrefferPOhneZielen;
+    private javax.swing.JLabel jLabelWaffentalentLbl;
+    private javax.swing.JLabel jLabelWahrnehmungLbl;
+    private javax.swing.JLabel jLabelWirkfaktorOut;
+    private javax.swing.JLabel jLabelZielSchwierigkeit;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanelAngreifer;
+    private javax.swing.JPanel jPanelErgebnisse;
+    private javax.swing.JPanel jPanelSchlachtSituation;
+    private javax.swing.JPanel jPanelSpielKonstanten;
+    private javax.swing.JPanel jPanelVerteidiger;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JSlider jSliderTaktik;
+    private javax.swing.JSlider jSliderTalentTarnung;
+    private javax.swing.JSlider jSliderTalentWahrnehmung;
+    private javax.swing.JSlider jSliderWaffenTalent;
+    private javax.swing.JSlider jSliderZielSchwierigkeit;
+    private javax.swing.JTextField jTextFieldAnzahlAndere;
+    private javax.swing.JTextField jTextFieldAnzahlZiele;
+    private javax.swing.JTextField jTextFieldAusfallAlpha;
+    private javax.swing.JTextField jTextFieldAusfallBeta;
+    private javax.swing.JTextField jTextFieldZielAlpha;
+    private javax.swing.JTextField jTextFieldZielBeta;
+    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextPane jTextPane2;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+    // End of variables declaration//GEN-END:variables
+
+    public int getTwTaktik() {
+        return twTaktik;
+    }
+
+    public void setTwTaktik(int twTaktik) {
+        this.twTaktik = twTaktik;
+    }
+
+    public int getTwWaffe() {
+        return twWaffe;
+    }
+
+    public void setTwWaffe(int twWaffe) {
+        this.twWaffe = twWaffe;
+    }
+
+    public int getTwWahrnehmung() {
+        return twWahrnehmung;
+    }
+
+    public void setTwWahrnehmung(int twWahrnehmung) {
+        this.twWahrnehmung = twWahrnehmung;
+    }
+
+    public int getNAlle() {
+        return nAlle;
+    }
+
+    public void setNAlle(int nAlle) {
+        this.nAlle = nAlle;
+    }
+
+    public int getNZiele() {
+        return nZiele;
+    }
+
+    public void setNZiele(int nZiele) {
+        this.nZiele = nZiele;
+    }
+
+    public int getTwTarnung() {
+        return twTarnung;
+    }
+
+    public void setTwTarnung(int twTarnung) {
+        this.twTarnung = twTarnung;
+    }
+}

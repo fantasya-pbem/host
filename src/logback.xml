@@ -1,0 +1,28 @@
+<configuration>
+
+	<!-- Appender that writes to standard output. -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Appender that writes to a file. The filename is built from the current date and time. -->
+	<timestamp key="bySecond" datePattern="dd-MM-yyyy_HH:mm:ss"/>
+
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>log-${bySecond}.txt</file>
+		<encoder>
+			<pattern>%-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+
+	<root level="DEBUG">
+		<appender-ref ref="FILE" />
+	</root>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

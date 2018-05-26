@@ -1,0 +1,155 @@
+<project name="Fantasya" default="build" basedir=".">
+	<description>
+		Fantasya
+	</description>
+
+	<!-- Standard libraries to use for the code and/or the tests. -->
+	<path id="path.libraries">
+		<pathelement location="lib/SizeOf.jar" />
+		<pathelement location="lib/mail.jar" />
+		<pathelement location="lib/mysql.jar" />
+		<pathelement location="lib/jaxb-api.jar" />
+		<pathelement location="lib/jaxb-impl.jar" />
+		<pathelement location="lib/logback-classic-1.0.11.jar" />
+		<pathelement location="lib/logback-core-1.0.11.jar" />
+		<pathelement location="lib/slf4j-api-1.7.5.jar" />
+	</path>
+
+	<path id="path.testlibs">
+		<pathelement location="lib/cglib-nodep-2.1_3.jar" />
+		<pathelement location="lib/junit-4.8.1.jar" />
+		<pathelement location="lib/hamcrest-core-1.1.jar" />
+		<pathelement location="lib/hamcrest-library-1.1.jar" />
+		<pathelement location="lib/jmock-2.5.1.jar" />
+		<pathelement location="lib/jmock-legacy-2.5.1.jar" />
+		<pathelement location="lib/objenesis-1.0.jar" />
+	</path>
+
+	<!-- Converts the library list into a space-separated path list suitable for the jar manifest -->
+	<pathconvert property="manifest.classpath" pathsep=" ">
+		<path refid="path.libraries" />
+		<mapper>
+			<chainedmapper>
+				<flattenmapper />
+				<globmapper from="*.jar" to="lib/*.jar"/>
+			</chainedmapper>
+		</mapper>
+	</pathconvert>
+
+	<!-- The various tasks -->
+	<target name="all" depends="clean,build,build-tests,build-applicationtests,run-tests,run-applicationtests" />
+
+
+	<target name="clean" description="Removes all compiled files etc.">
+		<delete dir="bin" />
+		<delete dir="built-tests" />
+		<delete dir="built-applicationtests" />
+	</target>
+
+
+	<target name="build" description="compiles the Java code and builds a jar file">
+		<mkdir dir="bin" />
+
+		<javac srcdir="src" destdir="bin" debug="true" includeantruntime="false" encoding="UTF-8">
+			<compilerarg value="-Xlint:unchecked"/>
+			<classpath refid="path.libraries" />
+		</javac>
+
+		<jar destfile="fantasya.jar">
+			<fileset dir="bin" />
+			<fileset file="src/logback.xml" />
+			<manifest>
+				<attribute name="Main-Class" value="de.x8bit.Fantasya.Host.Main" />
+				<attribute name="Class-Path" value="${manifest.classpath}"/>
+			</manifest>
+		</jar>
+	</target>
+
+
+	<target name="build-tests" depends="build" description="Compiles all unit tests">
+		<mkdir dir="built-tests" />
+
+		<javac srcdir="test" destdir="built-tests" debug="true" includeantruntime="false" encoding="UTF-8">
+			<compilerarg value="-Xlint:unchecked"/>
+			<classpath>
+				<path refid="path.testlibs" />
+				<path refid="path.libraries" />
+				<pathElement location="bin" />
+			</classpath>
+		</javac>
+	</target>
+
+
+	<target name="build-applicationtests" depends="build,build-tests" description="Build complex tests that require a valid database">
+		<mkdir dir="built-applicationtests" />
+
+		<javac srcdir="applicationtest" destdir="built-applicationtests" debug="true" includeantruntime="false" encoding="UTF-8">
+			<compilerarg value="-Xlint:unchecked"/>
+			<classpath>
+				<path refid="path.testlibs" />
+				<path refid="path.libraries" />
+				<pathElement location="bin" />
+				<pathElement location="built-tests" />
+			</classpath>
+		</javac>
+	</target>
+
+
+	<target name="run-tests" depends="build-tests" description="Runs all unit tests">
+		<junit haltonfailure="true" includeantruntime="false">
+			<classpath>
+				<path refid="path.testlibs" />
+				<path refid="path.libraries" />
+				<pathElement location="test" />
+				<pathElement location="built-tests" />
+				<pathElement location="bin" />
+			</classpath>
+			<batchtest>
+				<fileset dir="built-tests">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+			<formatter type="brief" usefile="false" />
+		</junit>
+	</target>
+
+
+	<target name="run-applicationtests" depends="build-applicationtests" description="Runs all application tests">
+		<!-- Load a couple of standard properties from a file outside subversion control
+		     (to avoid disclosing your database parameters). The property file needs to have the
+		     following properties set:
+
+		     fantasya.db.url       - specifies the JDBC URL (hostname, port, database) for the database
+		     fantasya.db.user      - the username for the database access (read-write!)
+		     fantasya.db.password  - the password of the user
+
+		     For the old tests, we also need
+		     fantasya.db.server    - address and port of the server
+		     fantasya.db.datenbank - the name of the database to use.
+
+		     These properties are then used to establish a connection to the database in these
+		     application tests. Otherwise, they will fail.
+		-->
+		<property file="database.prop" />
+
+		<junit haltonfailure="true" includeantruntime="false">
+			<syspropertyset>
+				<propertyref prefix="fantasya.db" />
+			</syspropertyset>
+			<classpath>
+				<path refid="path.testlibs" />
+				<path refid="path.libraries" />
+				<pathElement location="applicationtest" />
+				<pathElement location="built-applicationtests" />
+				<pathElement location="bin" />
+				<pathElement location="built-tests" />
+			</classpath>
+			<batchtest>
+				<fileset dir="built-applicationtests">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+			<formatter type="brief" usefile="false" />
+		</junit>
+	</target>
+</project>

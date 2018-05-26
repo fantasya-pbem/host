@@ -1,0 +1,33 @@
+<database>
+	<tables>
+		<table>
+			<name>testtable</name>
+			<rows>
+				<row>
+					<entries>
+						<entry>
+							<key>firstColumn</key>
+							<value>val_11</value>
+						</entry>
+						<entry>
+							<key>secondColumn</key>
+							<value>val_12</value>
+						</entry>
+					</entries>
+				</row>
+				<row>
+					<entries>
+						<entry>
+							<key>badColumnName</key>
+							<value>val_21</value>
+						</entry>
+						<entry>
+							<key>secondColumn</key>
+							<value>val_22</value>
+						</entry>
+					</entries>
+				</row>
+			</rows>
+		</table>
+	</tables>
+</database>

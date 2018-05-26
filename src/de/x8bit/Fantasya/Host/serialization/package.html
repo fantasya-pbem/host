@@ -1,0 +1,55 @@
+<html>
+<head />
+<body>
+Loads or saves the Fantasya game world to a storage medium (database, xml, or whatever makes sense).
+
+<p>
+Since the serialization is heavily biased towards databases, we always store
+everything in a database way (in tables), although some formats (xml) provide much
+more suitable hierarchical data layouts. As such, in the following, we will
+always talk of tables, columns and rows, although the serialization code is not
+restricted to databases. Loading of objects goes in three layers:
+</p>
+
+<p>
+On the innermost level, there are primitive ("basic") serializers ({@see
+de.x8bit.Fantasya.Host.serialization.basic.ObjectSerializer}). Given a mapping
+of key-value pairs (i.e., essentially a single row of a table), they can
+construct a new object (e.g., a UnitSerializer creates a new unit) or
+modify an existing object (e.g., a SkillSerializer "teaches" an existing
+unit). In the other direction, given a corresponding object, these basic
+serializers return a small table that gives the serialized form of the
+appropriate property (unit, unit skills, party alliances etc.). The mini table
+is returned in the form of a 
+{@ref de.x8bit.Fantasya.Host.serialization.util.SerializedData} object, which is
+essentially a list of key-value maps (strings only) that can be merged etc.
+</p>
+
+<p>
+One level up, there are always repeating procedures what to do after an object
+is loaded, or which objects to save. For example, a repeating pattern is that a
+whole database table has to be converted into many units, which are put in a
+list/cache on loading, and on saving each element in the list must be saved.
+These patterns are implemented by 
+{@ref de.x8bit.Fantasya.Host.serialization.complex.ComplexHandler}
+implementations. They usually get a basic serializer to do the actual
+line-by-line loading and object-by-object saving. The input on loading and the
+output on saving is a SerializedData object that contains the combined data
+describing, e.g., all elements in the list.
+</p>
+
+<p>
+In a final step, we need to convert our custom SerializedData object
+from or to the storage (the database or an XML file). This is done by
+so-called adapters. Adapters basically take a table name and a SerializedData
+object, and convert this from or into the appropriate storage format.
+</p>
+
+<p>
+The whole code is then thrown together in the
+{@link de.x8bit.Fantasya.Host.EVA.serialization.Serializer} class. This class in
+turn is set up with the default order of the tables etc. by the
+{@link de.x8bit.Fantasya.Host.EVA.serialization.SerializerFactory} class.
+</p>
+</body>
+</html>

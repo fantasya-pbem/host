@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="Fake" class="de.x8bit.Fantasya.log.FakeAppender" />
+
+	<root level="trace">
+		<appender-ref ref="Fake" />
+	</root>
+</configuration>
