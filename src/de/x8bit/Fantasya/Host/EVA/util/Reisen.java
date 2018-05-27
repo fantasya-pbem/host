@@ -252,7 +252,23 @@ public class Reisen {
 			// new Debug("Richtungs-Aufträge: " + StringUtils.aufzaehlung(auftraege));
 
             // Richtung holen und Bewegung ausführen
-			Richtung richtung = Richtung.getRichtung(auftraege.get(0));
+			/*
+			 * #2 (Exception bei fehlerhaften Bewegungsbefehlen)
+			 * Abfangen der Exception bei problematischen Befehlen.
+			 */
+			Richtung richtung = null;
+			int abbruch = 0;
+			try {
+				richtung = Richtung.getRichtung(auftraege.get(0));
+			} catch (IllegalArgumentException e) {
+				abbruch = 1;
+			}
+			if (abbruch > 0) {
+				new Debug("Fehler: Einzelbefehl " + eb.toString() + " enthält eine ungültige Richtung!");
+				new Bewegung(u + " kennt die Richtung " + auftraege.get(0) + " nicht.", u);
+				break;
+			}
+
             // new Debug("Richtung: " + richtung);
 			if (richtung != null) {
                 // wenn irgendwas nicht geht, dann gibt es hier null zurück:
