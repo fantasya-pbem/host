@@ -312,7 +312,13 @@ public class Handeln extends EVABase
 
 		boolean ende = false;
 		// Kaufgut der Region herausfinden.
-		Class<? extends Item> buyItemClass = region.getKaufNachfrage().getItem();
+		Class<? extends Item> buyItemClass = null;
+		try {
+			 buyItemClass = region.getKaufNachfrage().getItem();
+		} catch (NullPointerException e) {
+			new Fehler("In " + region.getName() + " wird kein Luxusgut produziert, einkaufen nicht möglich.");
+			ende = true;
+		}
 		 
 		while(!ende)
 		{
