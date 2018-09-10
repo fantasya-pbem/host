@@ -27,12 +27,12 @@ import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 abstract public class ZATBase {
 
 	/**
-	 * <h3><font color="red">der Konstruktor ist fÃ¼r vorwiegend Allgemeines zustÃ¤ndig</font></h3>
+	 * <h3><font color="red">der Konstruktor ist für vorwiegend Allgemeines zuständig</font></h3>
 	 * <br><br> 
-	 * der einfache Konstruktor ... hier wird einfach nur das System aufgerÃ¤umt (vom
+	 * der einfache Konstruktor ... hier wird einfach nur das System aufgeräumt (vom
 	 * letzten ZAT-Schritt) und der GC von Hand gestartet
 	 * <b>hier wird kein PostAction bzw. PreAction aufgerufen, selber machen !!</b>
-	 * @param message - Meldung fÃ¼r das Logging zu diesem Schritt
+	 * @param message - Meldung für das Logging zu diesem Schritt
 	 */
 	//private static Unit debug = Unit.Load(Atlantis.toBase10("qo"));
 	public ZATBase(String message) {
@@ -41,20 +41,20 @@ abstract public class ZATBase {
 	}
 
 	/**
-	 * <h3><font color="red">der Konstruktor ist vorwiegend fÃ¼r Befehle die eine gesamte Region betreffen</font></h3>
+	 * <h3><font color="red">der Konstruktor ist vorwiegend für Befehle die eine gesamte Region betreffen</font></h3>
 	 * <br><br>
 	 * durchsucht die DB nach allen Regionen in denen Einheiten stehen die diesen Befehl 
-	 * ausfÃ¼hren wollen ... das Problem bei einigen Befehle ist die Interaktion mit anderen
+	 * ausführen wollen ... das Problem bei einigen Befehle ist die Interaktion mit anderen
 	 * Einheiten bzw. das Limit an Resourcen in der Region (MACHE HOLZ, etc.)
-	 * @param befehl - der Befehl soll ausgefÃ¼hrt werden
-	 * @param message - Meldung fÃ¼r das System-Logging
+	 * @param befehl - der Befehl soll ausgeführt werden
+	 * @param message - Meldung für das System-Logging
 	 */
 	public ZATBase(String befehl, String message) {
 		new ZATMsg(message);
 
 		PreAction();
 
-		// hier werden jetzt alle Regionen gesucht wo Einheiten den gewÃ¼nschten Befehl ausfÃ¼hren wollen
+		// hier werden jetzt alle Regionen gesucht wo Einheiten den gewünschten Befehl ausführen wollen
 		Datenbank db = new Datenbank(befehl);
 		// SELECT b.*, e.koordx, e.koordy, e.welt FROM befehle b, einheiten e WHERE befehl LIKE 'mache%' AND e.nummer = b.nummer GROUP BY b.nummer, e.koordx, e.koordy, e.welt ORDER BY sortierung
 		db.myQuery = "SELECT e.koordx, e.koordy, e.welt FROM einheiten e, befehle b WHERE e.nummer = b.nummer AND b.befehl LIKE '" + befehl + "%' GROUP BY koordx, koordy, welt";
@@ -64,7 +64,7 @@ abstract public class ZATBase {
 				Region r = Region.Load(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
 				DoAction(r, befehl);
 
-//				// da hier der Speicher definitiv voll lÃ¤uft, nach jeder Region aufrÃ¤umen
+//				// da hier der Speicher definitiv voll läuft, nach jeder Region aufräumen
 //				ZATBase.SaveAll();
 //				-- deaktiviert am 07.01.2010
 			}
@@ -73,18 +73,18 @@ abstract public class ZATBase {
 		}
 		db.Close();
 
-		ZATBase.ClearProxy(); // das muss hier ausgefÃ¼hrt werden - sonst wird im PostAction ggf. alles gelÃ¶scht
+		ZATBase.ClearProxy(); // das muss hier ausgeführt werden - sonst wird im PostAction ggf. alles gelöscht
 
 		PostAction();
 		CleanUp();
 	}
 
 	/**
-	 * <h3><font color="red">der Konstruktor ist vorwiegend fÃ¼r Befehle die spezifisch sind fÃ¼r eine Einheit</font></h3>
+	 * <h3><font color="red">der Konstruktor ist vorwiegend für Befehle die spezifisch sind für eine Einheit</font></h3>
 	 * <br><br> 
-	 * fÃ¼hrt ein suchen nach den Einheiten aus welche den Befehl ausfÃ¼hren wollen
-	 * @param befehl - der Befehl soll ausgefÃ¼hrt werden
-	 * @param message - Meldung fÃ¼r das Logging zu diesem Schritt
+	 * führt ein suchen nach den Einheiten aus, welche den Befehl ausführen wollen
+	 * @param befehl - der Befehl soll ausgeführt werden
+	 * @param message - Meldung für das Logging zu diesem Schritt
 	 * @param minSize - mind. Anzahl der Befehlsteile (MACHE HOLZ -> 2, GIB einheit Holz -> 3, etc.) 
 	 */
 	public ZATBase(String befehl, String message, int minSize) {
@@ -99,7 +99,7 @@ abstract public class ZATBase {
 				Unit unit = Unit.Load(rs.getInt("nummer"));
 				Action(unit, befehl.toLowerCase(), minSize);
 
-				// AufrÃ¤umen nach jeder Einheit erzwingen
+				// Aufräumen nach jeder Einheit erzwingen
 				//force_clear = true; // seit 0.12.4 - es wird sonst nicht immer gespeichert !! - Bug ist UNKLAR !!
 				if (force_clear) {
 					ZATBase.ClearProxy();
@@ -114,54 +114,54 @@ abstract public class ZATBase {
 		PostAction();
 		CleanUp();
 	}
-	/** erzwingt das AufrÃ¤umen nach jeder Einheit */
+	/** erzwingt das Aufräumen nach jeder Einheit */
 	protected boolean force_clear = false;
 
 	/**
-	 * rÃ¤umt das ganze System auf ... dazu werden die ganzen Proxy's gelÃ¶scht und anschlieÃŸend
+	 * räumt das ganze System auf ... dazu werden die ganzen Proxy's gelöscht und anschließend
 	 * noch der GC aufgerufen
 	 */
 	private void CleanUp() {
-		// alte Datenbankverbindungen aufrÃ¤umen
+		// alte Datenbankverbindungen aufräumen
 		Datenbank.CleanUp();
 
-		// alle Proxy's lÃ¶schen
+		// alle Proxy's löschen
 		ClearProxy();
 	}
 
 	/**
-	 * lÃ¶scht alle Proxy's
+	 * löscht alle Proxy's
 	 */
 	public static void ClearProxy() {
 		ClearProxy(true);
 
-		// wenn die Proxy's nicht gelÃ¶scht werden, gibt es durchaus disharmonien beim Bewegen ... die Einheiten
+		// wenn die Proxy's nicht gelöscht werden, gibt es durchaus disharmonien beim Bewegen ... die Einheiten
 		// sind noch in der Region selber gelistet, sind dort aber nicht mehr ... und in der neuen Region
 		// sind sie noch nicht gelistet
 //		SaveAll(false);
 	}
 
 	/**
-	 * lÃ¶scht alle Proxys
-	 * @param clear - TRUE wenn die Proxys gelÃ¶scht werden sollen, sonst wird nur in die DB gespeichert
+	 * löscht alle Proxys
+	 * @param clear - TRUE wenn die Proxys gelöscht werden sollen, sonst wird nur in die DB gespeichert
 	 */
 	public static void ClearProxy(boolean clear) {
-		// Parteien lÃ¶schen
+		// Parteien löschen
 		if (clear) {
 			Partei.PROXY.clear();
 		}
 
-		// Schiffe lÃ¶schen
+		// Schiffe löschen
 		if (clear) {
 			Ship.PROXY.clear();
 		}
 
-		// GebÃ¤ude lÃ¶schen
+		// Gebäude löschen
 		if (clear) {
 			Building.PROXY.clear();
 		}
 
-		// Einheiten lÃ¶schen
+		// Einheiten löschen
 		if (clear) {
 			Unit.CACHE.clear();
 		}
@@ -171,17 +171,17 @@ abstract public class ZATBase {
 			Region.CACHE.clear();
 		}
 
-		// den GC erzwingen damit die Objekte auch wirklich den Speicher frei rÃ¤umen
+		// den GC erzwingen damit die Objekte auch wirklich den Speicher frei räumen
 		if (clear) {
 			System.gc();
 		}
 	}
 
 	/**
-	 * die absolute Verwaltung der BefehlsausfÃ¼hrung ... hier werden die Ganzen Einheiten
-	 * dazu aufgefordert den Befehl auszufÃ¼hren ... DoAction() leitet dazu an den jeweiligen
-	 * ZAT-Schritt zurÃ¼ck um dort dann verarbeitet zu werden
-	 * @param unit - Einheit fÃ¼r die der Befehl ausgefÃ¼hrt werden soll
+	 * die absolute Verwaltung der Befehlsausführung ... hier werden die Ganzen Einheiten
+	 * dazu aufgefordert den Befehl auszuführen ... DoAction() leitet dazu an den jeweiligen
+	 * ZAT-Schritt zurück um dort dann verarbeitet zu werden
+	 * @param unit - Einheit für die der Befehl ausgeführt werden soll
 	 * @param befehl - das ist der komplette Befehle, ungeparst & so
 	 * @param minSize - soviele Befehlsteile muss der Befehl haben, sonst wird nicht an DoAction weiter geleitet
 	 */
@@ -241,39 +241,39 @@ abstract public class ZATBase {
 	}
 
 	/**
-	 * hier wird der ganze Kram fÃ¼r den ZAT-Schritt ausgefÃ¼hrt ... dazu wird das durchkÃ¤mmen der Befehle
-	 * nach dem entsprechenden Befehl schon von der Basis-Klasse ausgefÃ¼hrt ... es wird einfach nur noch
+	 * hier wird der ganze Kram für den ZAT-Schritt ausgeführt ... dazu wird das durchkämmen der Befehle
+	 * nach dem entsprechenden Befehl schon von der Basis-Klasse ausgeführt ... es wird einfach nur noch
 	 * die Methode mit der Einheit und den bereits zerlegten Befehl aufgerufen
 	 * <br><br>
 	 * <b>diese Methode wird nicht von der Klasse <unit>TempEinheiten</unit> verwendet, siehe dort</b>
 	 * <br><br>
-	 * @param unit - die Einheit fÃ¼r die der Befehl ausgefÃ¼hrt werden soll
-	 * @param befehl - der Befehl ... bereits an den Leerzeichen zerlegt und als Array Ã¼bergeben
+	 * @param unit - die Einheit für die der Befehl ausgeführt werden soll
+	 * @param befehl - der Befehl ... bereits an den Leerzeichen zerlegt und als Array übergeben
 	 * @return true wenn der Befehl behalten werden soll (z.B. LIEFERE)
 	 */
 	abstract public boolean DoAction(Unit u, String befehl[]);
 
 	/**
-	 * hier wird der ganze Kram fÃ¼r den ZAT-Schritt ausgefÃ¼hrt ... dazu wird das durchkÃ¤mmen der Befehle
-	 * nach dem entsprechenden Befehl schon von der Basis-Klasse ausgefÃ¼hrt ... es wird einfach nur noch
+	 * hier wird der ganze Kram für den ZAT-Schritt ausgeführt ... dazu wird das durchkämmen der Befehle
+	 * nach dem entsprechenden Befehl schon von der Basis-Klasse ausgeführt ... es wird einfach nur noch
 	 * die Methode mit der Einheit und den bereits zerlegten Befehl aufgerufen
 	 * <br><br>
 	 * <b>diese Methode wird nicht von der Klasse <unit>TempEinheiten</unit> verwendet, siehe dort</b>
 	 * <br><br>
-	 * @param r - die Region fÃ¼r die diverse Befehl ausgefÃ¼hrt werden soll, bzw. fÃ¼r die Einheiten in der Region
+	 * @param r - die Region für die diverse Befehl ausgeführt werden soll, bzw. für die Einheiten in der Region
 	 * @param befehl - der Befehl der wichtig ist
 	 */
 	abstract public void DoAction(Region r, String befehl);
 
 	/**
-	 * wird ausgefÃ¼hrt <b>bevor</b> die Befehle fÃ¼r die Einheiten abgearbeitet werden ... kann also
-	 * benutzt werden um Tabellen zu lÃ¶schen und andere Operationen durchzufÃ¼hren
+	 * wird ausgeführt <b>bevor</b> die Befehle für die Einheiten abgearbeitet werden ... kann also
+	 * benutzt werden um Tabellen zu löschen und andere Operationen durchzuführen
 	 */
 	abstract public void PreAction();
 
 	/**
-	 * wird ausgefÃ¼hrt <b>nachdem</b> die Befehle fÃ¼r die Einheiten abgearbeitet wurden ... kann also
-	 * benutzt werden um Tabellen zu lÃ¶schen und andere Operationen durchzufÃ¼hren
+	 * wird ausgeführt <b>nachdem</b> die Befehle für die Einheiten abgearbeitet wurden ... kann also
+	 * benutzt werden um Tabellen zu löschen und andere Operationen durchzuführen
 	 */
 	abstract public void PostAction();
 	protected static Writer template = null;
@@ -365,7 +365,7 @@ abstract public class ZATBase {
 					current = null;
 					quotation = false;
 				} else {
-					// ein kleines ZwischenstÃ¼ck ... zb. "der" oder "tausend" bei "Hain der tausend Eichen" 
+					// ein kleines Zwischenstück ... zb. "der" oder "tausend" bei "Hain der tausend Eichen"
 					// braucht nix gemacht werden
 				}
 			} else {
@@ -509,11 +509,11 @@ abstract public class ZATBase {
 */
 	/**
 	 * <p>Sucht alle Einheiten mit einem speziellen Befehl aus einer Liste der Einheiten-Nummern.</p>
-	 * <p>Grund fÃ¼r die Verwendung von Nummern statt Unit-Objekten: So mÃ¼ssen nicht alle Einheiten
+	 * <p>Grund für die Verwendung von Nummern statt Unit-Objekten: So müssen nicht alle Einheiten
 	 * gleichzeitig in einer Liste und damit im Speicher gehalten werden. Einheiten, die nicht passen,
-	 * kÃ¶nnen wieder verworfen werden.
+	 * können wieder verworfen werden.
 	 * @param alleEinheitenNummern List mit dezimalen Einheiten-Nummern
-	 * @param befehl Der gewÃ¼nschte Befehl, nur das SchlÃ¼sselwort angeben!
+	 * @param befehl Der gewünschte Befehl, nur das Schlüsselwort angeben!
 	 * @return List der Einheiten, die den gegebenen Befehl enthalten
 	 */
 	public static List<Einzelbefehl> getEinzelbefehle(List<Integer> einheitenNummern, String befehl) {
