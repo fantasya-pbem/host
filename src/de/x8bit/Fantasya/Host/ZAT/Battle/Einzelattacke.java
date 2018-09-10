@@ -160,7 +160,7 @@ public class Einzelattacke {
 				shorty.append(String.format("%-9s", "(" + verteidiger.getLebenspunkte() + ">" + verteidiger.getTrefferpunkte() + ")"));
 			}
 		}
-		if (isTot()) shorty.append(" -- ").append(verteidiger.kurzCode()).append("t"); // + "†");
+		if (isTot()) shorty.append(" -- ").append(verteidiger.kurzCode()).append("t");
 
 		return shorty.toString();
 	}
