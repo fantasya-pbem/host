@@ -183,7 +183,7 @@ public class Partei extends Atlantis {
 	}
 
 	/**
-	 * liefert den Status der Partei f�r das Monsterdasein
+	 * liefert den Status der Partei für das Monsterdasein
 	 * 1 -> kein weitere World XML-Report
 	 * 2 -> nur der GEO XML-Report
 	 * 3 -> der komplette World XML-Report
@@ -195,7 +195,7 @@ public class Partei extends Atlantis {
 	}
 
 	/**
-	 * liefert den Status der Partei f�r das Monsterdasein
+	 * liefert den Status der Partei für das Monsterdasein
 	 * 1 -> kein weitere World XML-Report
 	 * 2 -> nur der GEO XML-Report
 	 * 3 -> der komplette World XML-Report
