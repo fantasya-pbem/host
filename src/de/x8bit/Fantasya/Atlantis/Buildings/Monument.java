@@ -18,12 +18,12 @@ public class Monument extends Building
 		new Fehler(u + " will nicht den einzigen Beweisen seines gloreichen Volkes vernichten", u, u.getCoords());
 		return;
 	}
-	
-	public String getTyp() { return "Hafen"; }
-	
+
+	public String getTyp() { return "Monument"; }
+
 	public int GebaeudeUnterhalt() { return 100; }
 
-	
+
 	/**
 	 * erstellt ein Gebäude bzw. baut daran weiter
 	 * @param u - diese Einheit will daran bauen
@@ -37,7 +37,7 @@ public class Monument extends Building
 			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoords());
 			return;
 		}
-		
+
 		GenericMake(u, 0, Burgenbau.class, 3, new Item [] { new Stein(7), new Eisen(5), new Holz(2), new Silber(150) } );
 	}
 
