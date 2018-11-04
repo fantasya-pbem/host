@@ -55,7 +55,7 @@ abstract public class EVABase {
 
 	/**
 	 * <h3><font color="red">der Konstruktor ist für vorwiegend Allgemeines zuständig</font></h3>
-	 * <br><br> 
+	 * <br><br>
 	 * der einfache Konstruktor ... hier wird einfach nur das System aufgeräumt (vom
 	 * letzten ZAT-Schritt) und der GC von Hand gestartet
 	 * <b>hier wird kein PostAction bzw. PreAction aufgerufen, selber machen !!</b>
@@ -79,7 +79,7 @@ abstract public class EVABase {
 	/**
 	 * <h3><font color="red">der Konstruktor ist vorwiegend für Befehle die eine gesamte Region betreffen</font></h3>
 	 * <br><br>
-	 * durchsucht die DB nach allen Regionen in denen Einheiten stehen die diesen Befehl 
+	 * durchsucht die DB nach allen Regionen in denen Einheiten stehen die diesen Befehl
 	 * ausführen wollen ... das Problem bei einigen Befehle ist die Interaktion mit anderen
 	 * Einheiten bzw. das Limit an Resourcen in der Region (MACHE HOLZ, etc.)
 	 * @param befehl - der Befehl soll ausgeführt werden
@@ -125,11 +125,11 @@ abstract public class EVABase {
 
 	/**
 	 * <h3><font color="red">der Konstruktor ist vorwiegend für Befehle die spezifisch sind für eine Einheit</font></h3>
-	 * <br><br> 
+	 * <br><br>
 	 * führt ein suchen nach den Einheiten aus welche den Befehl ausführen wollen
 	 * @param befehl - der Befehl soll ausgeführt werden
 	 * @param message - Meldung für das Logging zu diesem Schritt
-	 * @param minSize - mind. Anzahl der Befehlsteile (MACHE HOLZ -> 2, GIB einheit Holz -> 3, etc.) 
+	 * @param minSize - mind. Anzahl der Befehlsteile (MACHE HOLZ -> 2, GIB einheit Holz -> 3, etc.)
 	 */
 	public EVABase(String befehl, String message, int minSize) {
 		if (!ZATMode.CurrentMode().getSkip(this.getClass())) {
@@ -427,7 +427,7 @@ abstract public class EVABase {
 	}
 
 	/**
-	 * liefert alle Einheiten, deren Befehle mit <i>command</i> beginnt 
+	 * liefert alle Einheiten, deren Befehle mit <i>command</i> beginnt
 	 * @param command - diesen Befehl soll einen Befehl ausführen
 	 * @return alle Einheiten mit den Befehlen
 	 * @deprecated
@@ -542,7 +542,7 @@ abstract public class EVABase {
 		new GibKommando();			// TEST ...
 		new Verlasse();				// TEST ...
 		new GebaeudeUnterhalt();	// TEST ...
-//		
+//
 //		// -- lange Befehle
 		new Zaubern();
 		new Zerstoere();
@@ -551,6 +551,7 @@ abstract public class EVABase {
 		new Lernen();
 		new Belagerung();
 		new Produktion();
+		new Bauen();
 		new BauernArbeiten();
 		new Unterhalten();
 		new Handeln();
@@ -600,10 +601,10 @@ abstract public class EVABase {
 		Datenbank.Disable();
 
 		new BefehlsCheckMeldungen(); // wird im normalen ZAT übersprungen.
-		
+
 		// old turn done, next turn now
 		GameRules.setRunde(GameRules.getRunde() + 1);
-		
+
 		// nur noch die Reporte schreiben
 		new Reporte();
 
@@ -643,7 +644,7 @@ abstract public class EVABase {
 			EVAFastSaver.saveAll(false);
 			Message.SaveAll();
 		} catch (SQLException ex) {
-			// TODO: hier sollte ich etwas defensiver vorgehen, immerhin 
+			// TODO: hier sollte ich etwas defensiver vorgehen, immerhin
 			//  geht es im Zweifelsfall um Datenverlust
 			new BigError(ex);
 		}
