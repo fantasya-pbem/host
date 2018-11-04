@@ -55,7 +55,7 @@ abstract public class EVABase {
 
 	/**
 	 * <h3><font color="red">der Konstruktor ist für vorwiegend Allgemeines zuständig</font></h3>
-	 * <br><br> 
+	 * <br><br>
 	 * der einfache Konstruktor ... hier wird einfach nur das System aufgeräumt (vom
 	 * letzten ZAT-Schritt) und der GC von Hand gestartet
 	 * <b>hier wird kein PostAction bzw. PreAction aufgerufen, selber machen !!</b>
@@ -77,13 +77,13 @@ abstract public class EVABase {
 	}
 
 	/**
-	 * <h3><font color="red">der Konstruktor ist vorwiegend fÃ¼r Befehle die eine gesamte Region betreffen</font></h3>
+	 * <h3><font color="red">der Konstruktor ist vorwiegend für Befehle die eine gesamte Region betreffen</font></h3>
 	 * <br><br>
-	 * durchsucht die DB nach allen Regionen in denen Einheiten stehen die diesen Befehl 
-	 * ausfÃ¼hren wollen ... das Problem bei einigen Befehle ist die Interaktion mit anderen
+	 * durchsucht die DB nach allen Regionen in denen Einheiten stehen die diesen Befehl
+	 * ausführen wollen ... das Problem bei einigen Befehle ist die Interaktion mit anderen
 	 * Einheiten bzw. das Limit an Resourcen in der Region (MACHE HOLZ, etc.)
-	 * @param befehl - der Befehl soll ausgefÃ¼hrt werden
-	 * @param message - Meldung fÃ¼r das System-Logging
+	 * @param befehl - der Befehl soll ausgeführt werden
+	 * @param message - Meldung für das System-Logging
 	 */
 	public EVABase(String befehl, String message) {
 		if (!ZATMode.CurrentMode().getSkip(this.getClass())) {
@@ -125,11 +125,11 @@ abstract public class EVABase {
 
 	/**
 	 * <h3><font color="red">der Konstruktor ist vorwiegend für Befehle die spezifisch sind für eine Einheit</font></h3>
-	 * <br><br> 
+	 * <br><br>
 	 * führt ein suchen nach den Einheiten aus welche den Befehl ausführen wollen
 	 * @param befehl - der Befehl soll ausgeführt werden
 	 * @param message - Meldung für das Logging zu diesem Schritt
-	 * @param minSize - mind. Anzahl der Befehlsteile (MACHE HOLZ -> 2, GIB einheit Holz -> 3, etc.) 
+	 * @param minSize - mind. Anzahl der Befehlsteile (MACHE HOLZ -> 2, GIB einheit Holz -> 3, etc.)
 	 */
 	public EVABase(String befehl, String message, int minSize) {
 		if (!ZATMode.CurrentMode().getSkip(this.getClass())) {
@@ -171,19 +171,19 @@ abstract public class EVABase {
 	}
 
 	/**
-	 * lÃ¶scht alle Proxys
-	 * @param clear - TRUE wenn die Proxys gelÃ¶scht werden sollen, sonst wird nur in die DB gespeichert
+	 * löscht alle Proxys
+	 * @param clear - TRUE wenn die Proxys gelöscht werden sollen, sonst wird nur in die DB gespeichert
 	 */
 	public static void ClearProxy(boolean clear) {
 		if (!Datenbank.isEnabled()) {
 			return; // FLAG EVA
 		}
-		// Parteien lÃ¶schen
+		// Parteien löschen
 		if (clear) {
 			Partei.PROXY.clear();
 		}
 
-		// Schiffe lÃ¶schen
+		// Schiffe löschen
 		if (clear) {
 			Ship.PROXY.clear();
 		}
@@ -193,7 +193,7 @@ abstract public class EVABase {
 			Building.PROXY.clear();
 		}
 
-		// Einheiten lÃ¶schen
+		// Einheiten löschen
 		if (clear) {
 			Unit.CACHE.clear();
 		}
@@ -203,7 +203,7 @@ abstract public class EVABase {
 			Region.CACHE.clear();
 		}
 
-		// den GC erzwingen damit die Objekte auch wirklich den Speicher frei rÃ¤umen
+		// den GC erzwingen damit die Objekte auch wirklich den Speicher frei räumen
 		if (clear) {
 			System.gc();
 		}
@@ -213,7 +213,7 @@ abstract public class EVABase {
 	 * die absolute Verwaltung der Befehlsausführung ... hier werden die Ganzen Einheiten
 	 * dazu aufgefordert den Befehl auszuführen ... DoAction() leitet dazu an den jeweiligen
 	 * ZAT-Schritt zurück um dort dann verarbeitet zu werden
-	 * @param unit - Einheit für die der Befehl ausgefÃ¼hrt werden soll
+	 * @param unit - Einheit für die der Befehl ausgeführt werden soll
 	 * @param befehl - das ist der komplette Befehle, ungeparst & so
 	 * @param minSize - soviele Befehlsteile muss der Befehl haben, sonst wird nicht an DoAction weiter geleitet
 	 */
@@ -273,26 +273,26 @@ abstract public class EVABase {
 	}
 
 	/**
-	 * hier wird der ganze Kram fÃ¼r den ZAT-Schritt ausgefÃ¼hrt ... dazu wird das durchkÃ¤mmen der Befehle
-	 * nach dem entsprechenden Befehl schon von der Basis-Klasse ausgefÃ¼hrt ... es wird einfach nur noch
+	 * hier wird der ganze Kram für den ZAT-Schritt ausgeführt ... dazu wird das durchkämmen der Befehle
+	 * nach dem entsprechenden Befehl schon von der Basis-Klasse ausgeführt ... es wird einfach nur noch
 	 * die Methode mit der Einheit und den bereits zerlegten Befehl aufgerufen
 	 * <br><br>
 	 * <b>diese Methode wird nicht von der Klasse <unit>TempEinheiten</unit> verwendet, siehe dort</b>
 	 * <br><br>
-	 * @param unit - die Einheit fÃ¼r die der Befehl ausgefÃ¼hrt werden soll
-	 * @param befehl - der Befehl ... bereits an den Leerzeichen zerlegt und als Array Ã¼bergeben
+	 * @param unit - die Einheit für die der Befehl ausgeführt werden soll
+	 * @param befehl - der Befehl ... bereits an den Leerzeichen zerlegt und als Array übergeben
 	 * @return true wenn der Befehl behalten werden soll (z.B. LIEFERE)
 	 */
 	abstract public boolean DoAction(Unit u, String befehl[]);
 
 	/**
-	 * hier wird der ganze Kram fÃ¼r den ZAT-Schritt ausgefÃ¼hrt ... dazu wird das durchkÃ¤mmen der Befehle
-	 * nach dem entsprechenden Befehl schon von der Basis-Klasse ausgefÃ¼hrt ... es wird einfach nur noch
+	 * hier wird der ganze Kram für den ZAT-Schritt ausgeführt ... dazu wird das durchkämmen der Befehle
+	 * nach dem entsprechenden Befehl schon von der Basis-Klasse ausgeführt ... es wird einfach nur noch
 	 * die Methode mit der Einheit und den bereits zerlegten Befehl aufgerufen
 	 * <br><br>
 	 * <b>diese Methode wird nicht von der Klasse <unit>TempEinheiten</unit> verwendet, siehe dort</b>
 	 * <br><br>
-	 * @param r - die Region fÃ¼r die diverse Befehl ausgefÃ¼hrt werden soll, bzw. fÃ¼r die Einheiten in der Region
+	 * @param r - die Region für die diverse Befehl ausgeführt werden soll, bzw. für die Einheiten in der Region
 	 * @param befehl - der Befehl der wichtig ist
 	 */
 	abstract public void DoAction(Region r, String befehl);
@@ -404,7 +404,7 @@ abstract public class EVABase {
 					current = null;
 					quotation = false;
 				} else {
-					// ein kleines ZwischenstÃ¼ck ... zb. "der" oder "tausend" bei "Hain der tausend Eichen" 
+					// ein kleines Zwischenstück ... zb. "der" oder "tausend" bei "Hain der tausend Eichen"
 					// braucht nix gemacht werden
 				}
 			} else {
@@ -427,7 +427,7 @@ abstract public class EVABase {
 	}
 
 	/**
-	 * liefert alle Einheiten, deren Befehle mit <i>command</i> beginnt 
+	 * liefert alle Einheiten, deren Befehle mit <i>command</i> beginnt
 	 * @param command - diesen Befehl soll einen Befehl ausführen
 	 * @return alle Einheiten mit den Befehlen
 	 * @deprecated
@@ -542,7 +542,7 @@ abstract public class EVABase {
 		new GibKommando();			// TEST ...
 		new Verlasse();				// TEST ...
 		new GebaeudeUnterhalt();	// TEST ...
-//		
+//
 //		// -- lange Befehle
 		new Zaubern();
 		new Zerstoere();
@@ -601,10 +601,10 @@ abstract public class EVABase {
 		Datenbank.Disable();
 
 		new BefehlsCheckMeldungen(); // wird im normalen ZAT übersprungen.
-		
+
 		// old turn done, next turn now
 		GameRules.setRunde(GameRules.getRunde() + 1);
-		
+
 		// nur noch die Reporte schreiben
 		new Reporte();
 
@@ -644,7 +644,7 @@ abstract public class EVABase {
 			EVAFastSaver.saveAll(false);
 			Message.SaveAll();
 		} catch (SQLException ex) {
-			// TODO: hier sollte ich etwas defensiver vorgehen, immerhin 
+			// TODO: hier sollte ich etwas defensiver vorgehen, immerhin
 			//  geht es im Zweifelsfall um Datenverlust
 			new BigError(ex);
 		}
