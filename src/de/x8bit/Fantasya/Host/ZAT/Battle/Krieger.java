@@ -447,7 +447,7 @@ public class Krieger {
             if (defender.getLebenspunkte() >= defender.getTrefferpunkte()) {
 				defender.removeWeapons();
                 retval.setTot(true);
-                if (m) shorty.append(" -- " + defender.kurzCode() + "t"); // + "†");
+                if (m) shorty.append(" -- " + defender.kurzCode() + "t");
                 
                 // pro Kill pauschal 10 Punkte - TODO Unterschiede machen - wie auch immer ?!
                 Partei p = Partei.getPartei(attacker.getUnit().getOwner());

@@ -104,8 +104,8 @@ public abstract class Region extends Atlantis {
 				Region.CACHE.put(r.getCoords(), r);
 			}
 
-			// jetzt aus DB laden und zur��ck liefern ... wenn die
-			// Region bereits existierte (und somit beim einf��gen ein Fehler auftrat),
+			// jetzt aus DB laden und zurück liefern ... wenn die
+			// Region bereits existierte (und somit beim einfügen ein Fehler auftrat),
 			// dann wird jetzt hier die eigentliche Region geliefert
 			r = Load(x, y, welt);
 		} catch (Exception e) {
@@ -116,7 +116,7 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * l��d eine bekannte Region aus der Datenbank
+	 * lädt eine bekannte Region aus der Datenbank
 	 * @param coords - die Koordinaten
 	 * @return eine bekannte Region, ggf. Chaos wenn die Region noch nicht existiert
 	 */
@@ -125,7 +125,7 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * l��dt eine bekannte Region aus der Datenbank
+	 * lädt eine bekannte Region aus der Datenbank
 	 * @param x - Koordinate X
 	 * @param y - Koordinate Y
 	 * @param welt - die Ebene
@@ -138,13 +138,13 @@ public abstract class Region extends Atlantis {
 			return Region.CACHE.get(c);
 		}
 
-		// Dann m��ssen wir davon ausgehen, dass es die Region (noch) nicht gibt:
+		// Dann müssen wir davon ausgehen, dass es die Region (noch) nicht gibt:
 		return new Chaos(x, y, welt);
 	}
 
 	/**
-	 * l��dt eine Region "flach" aus der DB - also ohne Einheiten, Resourcen, Luxus etc.
-	 * Es liegt in der Verantwortung der aufrufenden Instanz, diese Verkn��pfungen herzustellen,
+	 * lädt eine Region "flach" aus der DB - also ohne Einheiten, Resourcen, Luxus etc.
+	 * Es liegt in der Verantwortung der aufrufenden Instanz, diese Verknüpfungen herzustellen,
 	 * das "lazy init" von Region wird hier gerade umgangen!
 	 * @param rs ResultSet aus der Tabelle 'regionen'
 	 * @return die Region - oder null
@@ -174,7 +174,7 @@ public abstract class Region extends Atlantis {
 
 		return r;
 	}
-	/** (EVA) Map ALLER Regionen, Schl��ssel sind ihre Koordinaten */
+	/** (EVA) Map ALLER Regionen, Schlüssel sind ihre Koordinaten */
 	public final static Map<Coords, Region> CACHE;
 	public static boolean USE_TOPTW_CACHE = false;
 
@@ -193,7 +193,7 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * @param p die gew��nschte Partei
+	 * @param p die gewünschte Partei
 	 * @return alle Einheiten der Partei p in dieser Region
 	 */
 	public SortedSet<Unit> getUnits(Partei p) {
@@ -201,7 +201,7 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * @param parteiNummer die Nummer der gew��nschten Partei
+	 * @param parteiNummer die Nummer der gewünschten Partei
 	 * @return alle Einheiten der Partei #parteiNummer in dieser Region
 	 */
 	public SortedSet<Unit> getUnits(int parteiNummer) {
@@ -228,8 +228,8 @@ public abstract class Region extends Atlantis {
 		return parteien;
 	}
 
-	/** alle Geb��ude in dieser Region
-	 * @return Alle Geb��ude in dieser Region, unabh��ngig von Art, Insassen und Zustand.
+	/** alle Gebäude in dieser Region
+	 * @return Alle Gebäude in dieser Region, unabhängig von Art, Insassen und Zustand.
 	 */
 	public Set<Building> getBuildings() {
 		return Building.PROXY.getAll(getCoords());
@@ -264,13 +264,13 @@ public abstract class Region extends Atlantis {
 	
 	public boolean canNachfrage() { return true; }
 	
-	/** alle Handelsg��ter f��r diese Region */
+	/** alle Handelsgüter für diese Region */
 	private ArrayList<Nachfrage> __luxus = new ArrayList<Nachfrage>();
 
 	public ArrayList<Nachfrage> getLuxus() {
 		if (__luxus.isEmpty()) {
 			// offensichtlich eine Region, die noch nicht durch Init() gegangen ist! (?)
-			// dieser Fall tritt derzeit (Okt 2010) regelm����ig in Region.cloneAs() auf
+			// dieser Fall tritt derzeit (Okt 2010) regelmäßig in Region.cloneAs() auf
 // crasht mit dem neuen Layout-System und sollte nicht mehr aktuell sein.
 //			this.Init_Handel();
 		}
@@ -278,7 +278,7 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * Sollte nur beim Terraforming o.��. verwendet werden!
+	 * Sollte nur beim Terraforming o.ä. verwendet werden!
 	 * @param luxusListe
 	 */
 	public void setLuxus(List<Nachfrage> luxusListe) {
@@ -293,29 +293,29 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * liefert den h��chsten TW f��r die gesammte Region
+	 * liefert den höchsten TW für die gesammte Region
 	 * @param skill - dieser Skill ist gesucht
-	 * @param partei - die Einheit muss zu dieser Partei geh��ren (oder 0 f��r alle Parteien)
+	 * @param partei - die Einheit muss zu dieser Partei gehören (oder 0 für alle Parteien)
 	 * @return TW oder 0, falls es gar keine passende Einheit gibt
 	 */
 	public int topTW(Class<? extends Skill> skill, int partei) {
 		Unit u = TopSkill(skill, partei);
 		if (u == null) {
-			// new Debug("topTW(" + skill.getSimpleName() + ")-Einheit in " + this + " f��r " + Partei.Load(partei) + " ist null.");
+			// new Debug("topTW(" + skill.getSimpleName() + ")-Einheit in " + this + " für " + Partei.Load(partei) + " ist null.");
 			return 0;
 		}
 		return u.Talentwert(skill);
 	}
 
 	/**
-	 * liefert die Einheit mit dem h��chsten Skill f��r die gesammte Region
+	 * liefert die Einheit mit dem höchsten Skill für die gesammte Region
 	 * @param skill - dieser Skill ist gesucht
-	 * @param partei - die Einheit muss zu dieser Partei geh��ren (oder 0 f��r alle Parteien)
-	 * @return Einheit mit h��chsten Skill oder null, wenn es gar keine passende Einheit gibt
+	 * @param partei - die Einheit muss zu dieser Partei gehören (oder 0 für alle Parteien)
+	 * @return Einheit mit höchsten Skill oder null, wenn es gar keine passende Einheit gibt
 	 */
 	public Unit TopSkill(Class<? extends Skill> skill, int partei) {
 		if (Region.USE_TOPTW_CACHE) {
-			// gecachte Abk��rzung, wird in Reporte() verwendet,
+			// gecachte Abkürzung, wird in Reporte() verwendet,
 			// wg. Partei.cansee(Unit) / Unit.cansee(Unit)
 			return Reporte.TopSkillCache.topUnit(this.getCoords(), partei, skill);
 		}
@@ -333,7 +333,7 @@ public abstract class Region extends Atlantis {
 			if (tu == null) {
 				tu = u;
 			}
-			// h��chstes Talent in der gesamten Region?
+			// höchstes Talent in der gesamten Region?
 			if (u.Talentwert(skill) > tu.Talentwert(skill)) {
 				tu = u;
 			}
@@ -377,7 +377,7 @@ public abstract class Region extends Atlantis {
 		fields.put("ralter", this.getAlter());
 		fields.put("entstandenin", getEnstandenIn()); // neu 2011-05-25
 		fields.put("insel", this.getInselKennung());
-		fields.put("typ", this.getClass().getSimpleName());				// Typ ist ��ber zauberspruch ��nderbar !
+		fields.put("typ", this.getClass().getSimpleName());				// Typ ist über zauberspruch änderbar !
 		fields.put("silber", this.getSilber());
 		fields.put("koordx", this.getCoords().getX());
 		fields.put("koordy", this.getCoords().getY());
@@ -412,7 +412,7 @@ public abstract class Region extends Atlantis {
 		lastChar = Random.rnd(0, 2);	// Anfang mit Vokal(0) oder Konsonant (1)
 
 		for (i = 0; i < maxsize; i++) {
-			// kleine Chanche f��r '
+			// kleine Chance für '
 			if ((Random.rnd(0, 255) % 128) <= 4) {
 				Apostroph = true;
 			}
@@ -440,13 +440,13 @@ public abstract class Region extends Atlantis {
 					buchstabe = kons.charAt(Random.rnd(0, kons.length()));
 				}
 
-				// erste Buchstabe immer gro��!
+				// erste Buchstabe immer groß!
 				if (i == 0) {
 					String s = new StringBuilder().append(buchstabe).toString();
 					s = s.toUpperCase();
 					buchstabe = s.charAt(0);
 				} else {
-					if (name.charAt(i - 1) == '-') // bei Bindestrichen (Unterwelt) auch Gro��
+					if (name.charAt(i - 1) == '-') // bei Bindestrichen (Unterwelt) auch Groß
 					{
 						String s = new StringBuilder().append(buchstabe).toString();
 						s = s.toUpperCase();
@@ -454,7 +454,7 @@ public abstract class Region extends Atlantis {
 					}
 				}
 
-//				// Buchstabe nach Bindestrich auch gro��
+//				// Buchstabe nach Bindestrich auch groß
 //				if (name.length() > 2) if (name.charAt(name.length() - 1) == '-')
 //				{
 //					String s = new StringBuilder().append(buchstabe).toString();
@@ -462,7 +462,7 @@ public abstract class Region extends Atlantis {
 //					buchstabe = s.charAt(0);
 //				}
 
-				// hinzuf��gen
+				// hinzufügen
 				name.append(buchstabe);
 
 				// Vokale und Konsonanten immer abwechselnd
@@ -489,12 +489,12 @@ public abstract class Region extends Atlantis {
 		Init_Handel();
 	}
 
-	/** hier werden jetzt alle Handelsg��ter pauschal initialisiert */
+	/** hier werden jetzt alle Handelsgüter pauschal initialisiert */
 	@SuppressWarnings("unchecked")
 	public void Init_Handel() {
 		__luxus.clear();
 
-		// alle bekannten Luxusg��ter sammeln und Nachfrage erzeugen
+		// alle bekannten Luxusgüter sammeln und Nachfrage erzeugen
 		if (Paket.getPaket("Items") == null) {
 			return;
 		}
@@ -562,7 +562,7 @@ public abstract class Region extends Atlantis {
 		if (bauern >= 0) {
 			Bauern = bauern;
 		} else {
-			new SysMsg("negativer Wert f��r bauern");
+			new SysMsg("negativer Wert für bauern");
 		}
 	}
 
@@ -616,11 +616,11 @@ public abstract class Region extends Atlantis {
 		if (anzahl >= 0) {
 			strassensteine[richtung.ordinal()] = anzahl;
 		} else {
-			new SysMsg("negativer Wert f��r strassensteine");
+			new SysMsg("negativer Wert für strassensteine");
 		}
 	}
 	/**
-	 * ben��tigte Steine pro Strasse
+	 * benötigte Steine pro Strasse
 	 * @uml.property  name="steineFuerStrasse"
 	 * @uml.associationEnd
 	 */
@@ -635,8 +635,8 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * Sollte in abgeleiteten Klassen entsprechend ��berladen werden!
-	 * @return Der passende deutsche Artikel z.B. f��r die Auflistung von Nachbarregionen im NR.
+	 * Sollte in abgeleiteten Klassen entsprechend überladen werden!
+	 * @return Der passende deutsche Artikel z.B. für die Auflistung von Nachbarregionen im NR.
 	 */
 	public String getArtikel() {
 		return "die";
@@ -702,7 +702,7 @@ public abstract class Region extends Atlantis {
 	 */
 	public void setSilber(int value) {
 		if (silber < 0) {
-			new SysErr("Silber f��r '" + this + "' < 0 => Reset");
+			new SysErr("Silber für '" + this + "' < 0 => Reset");
 		}
 		silber = value;
 	}
@@ -728,7 +728,7 @@ public abstract class Region extends Atlantis {
 		InselKennung = value;
 	}
 
-	/** Handelsgut f��r diese Region - das produzieren die Bauern */
+	/** Handelsgut für diese Region - das produzieren die Bauern */
 	public Class<? extends Item> getProduce() {
 		for (Nachfrage n : getLuxus()) {
 			if (n.getNachfrage() < 0) {
@@ -738,7 +738,7 @@ public abstract class Region extends Atlantis {
 		return null; // Ozeane etc.
 	}
 
-	/** Nachfrage f��r ein Handelsgut festlegen */
+	/** Nachfrage für ein Handelsgut festlegen */
 	public void setNachfrage(Class<? extends Item> item, float nachfrage) {
 		for (Nachfrage n : getLuxus()) {
 			if (n.getItem().equals(item)) {
@@ -753,8 +753,8 @@ public abstract class Region extends Atlantis {
 	/**
 	 * sammelt das Geld von anderen Einheiten bzw. Alliierten
 	 * @param unit - diese Einheit
-	 * @param bedarf - soviel ben��tigt
-	 * @param grund - wenn ungleich null, wird dem Spender eine Meldung ��ber diesen Grund geschickt
+	 * @param bedarf - soviel benötigt
+	 * @param grund - wenn ungleich null, wird dem Spender eine Meldung über diesen Grund geschickt
 	 * @return soviel bekommen
 	 */
 	public int CollectMoney(Unit unit, int bedarf, String grund) {
@@ -832,16 +832,16 @@ public abstract class Region extends Atlantis {
 		// Richtung umdrehen
 		Richtung back = richtung.invert();
 		// Strasse nur wenn in beiden Regionen in die passende Richtung fertig
-		// new SysMsg("Stra��ensteine in " + this + " nach " + richtung + ": " + this.getStrassensteine(richtung) + " von mind. " + this.getSteineFuerStrasse());
-		// new SysMsg("Stra��ensteine in " + hr + " nach " + back + ": " + hr.getStrassensteine(back) + " von mind. " + hr.getSteineFuerStrasse());
+		// new SysMsg("Straßensteine in " + this + " nach " + richtung + ": " + this.getStrassensteine(richtung) + " von mind. " + this.getSteineFuerStrasse());
+		// new SysMsg("Straßensteine in " + hr + " nach " + back + ": " + hr.getStrassensteine(back) + " von mind. " + hr.getSteineFuerStrasse());
 		return ((this.getStrassensteine(richtung) >= this.getSteineFuerStrasse()) && (hr.getStrassensteine(back) >= hr.getSteineFuerStrasse()));
 	}
 
 	/**
 	 * testet ob die Region bewacht wird ... dabei liefert die Funktion ein TRUE
 	 * wenn die Region von <b>Nicht</b>-Alliierten Einheiten bewacht wird
-	 * @param unit - Status f��r diese Einheit abfragen
-	 * @param ao - diese Option wird ben��tigt um das Bewache zu umgehen
+	 * @param unit - Status für diese Einheit abfragen
+	 * @param ao - diese Option wird benötigt um das Bewache zu umgehen
 	 * @return TRUE wenn die Region von Nicht-Allierten bewacht wird
 	 */
 	public boolean istBewacht(Unit unit, AllianzOption ao) {
@@ -849,7 +849,7 @@ public abstract class Region extends Atlantis {
 
 		Partei owner = Partei.getPartei(unit.getOwner());
 		if (owner == null) {
-			new BigError("Einheit ohne Parteizugeh��rigkeit!");
+			new BigError("Einheit ohne Parteizugehörigkeit!");
 		}
 
 		for (Unit other : getUnits()) {
@@ -867,8 +867,8 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * @param u Einheit, die von eventueller Bewachung betroffen w��re
-	 * @return Alle Parteien, die effektiv bewachende Einheiten gegen��ber Einheit u haben - Parteien, die nicht mit Einheit u alliert sind und die auch keinen Kontakt aufgenommen haben.
+	 * @param u Einheit, die von eventueller Bewachung betroffen wäre
+	 * @return Alle Parteien, die effektiv bewachende Einheiten gegenüber Einheit u haben - Parteien, die nicht mit Einheit u alliert sind und die auch keinen Kontakt aufgenommen haben.
 	 */
 	public Set<Partei> getBewacherParteien(Unit u) {
 		Set<Partei> bewacher = new HashSet<Partei>();
@@ -901,7 +901,7 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * @param parteien Diejenigen Partei, deren Wachen beschrieben werden sollen. Vorzugsweise der R��ckgabewert von Region.getBewacherParteien(Unit) .
+	 * @param parteien Diejenigen Partei, deren Wachen beschrieben werden sollen. Vorzugsweise der Rückgabewert von Region.getBewacherParteien(Unit) .
 	 * @return menschenlesbare Beschreibung der Bewacher
 	 */
 	public String getBewacherPhrase(Set<Partei> parteien) {
@@ -930,9 +930,9 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * testet ob diese Region eine Burg in der entsprechenden Gr����e besitzt
-	 * @param building - das Geb��ude wird getestet
-	 * @param mindestgroesse - so gro�� muss es sein - oder 0 wenn egal (also nur testen auf vorhanden)
+	 * testet, ob diese Region eine Burg in der entsprechenden Größe besitzt
+	 * @param building - das Gebäude wird getestet
+	 * @param mindestgroesse - so groß muss es sein - oder 0 wenn egal (also nur testen auf vorhanden)
 	 * @param owner - Besitzer-<b>Partei</b> oder null, wenn egal
 	 * @return
 	 */
@@ -959,17 +959,17 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * <font color="red"><b>die ��berschreibung in den einzelnen Regionen liefert die <u>freie</u> Arbeitspl��tze</b></font><br/>
-	 * liefert die verwendeten Arbeitspl��tze ... dabei liegt der Verbrauch wie folgt
+	 * <font color="red"><b>die Überschreibung in den einzelnen Regionen liefert die <u>freie</u> Arbeitsplätze</b></font><br/>
+	 * liefert die verwendeten Arbeitsplätze ... dabei liegt der Verbrauch wie folgt
 	 * <ul>
-	 * <li>1 Baum ben��tigt 10 Arbeitspl��tze</li>
-	 * <li>1 Bauern ben��tigt 1 Arbeitsplatz</li>
-	 * <li>1 Pferd ben��tigt 1 Arbeitsplatz</li>
-	 * <li>1 Kamel ben��tigt 1 Arbeitsplatz</li>
-	 * <li>1 Elefant ben��tigt 5 Arbeitspl��tze</li>
+	 * <li>1 Baum benötigt 10 Arbeitsplätze</li>
+	 * <li>1 Bauern benötigt 1 Arbeitsplatz</li>
+	 * <li>1 Pferd benötigt 1 Arbeitsplatz</li>
+	 * <li>1 Kamel benötigt 1 Arbeitsplatz</li>
+	 * <li>1 Elefant benötigt 5 Arbeitsplätze</li>
 	 * </ul>
-	 * <font color="red"><b>die ��berschreibung in den einzelnen Regionen liefert die <u>freie</u> Arbeitspl��tze</b></font>
-	 * @return verwendete Arbeitspl��tze
+	 * <font color="red"><b>die Überschreibung in den einzelnen Regionen liefert die <u>freie</u> Arbeitsplätze</b></font>
+	 * @return verwendete Arbeitsplätze
 	 */
 	public int benutzteArbeitsplaetze() {
 		int used = getBauern();
@@ -1063,7 +1063,7 @@ public abstract class Region extends Atlantis {
 	/** die Bauern wollen auch etwas essen */
 	private void BauernUnterhalt() {
 		// new Info("In " + this + " " + getCoords() + " wollen " + getBauern() + " Bauern essen, es gibt " + getSilber() + " Silber.", 0);
-		int bedarf = getBauern() * 10; // soviel n��tig
+		int bedarf = getBauern() * 10; // soviel nötig
 		if (bedarf < getSilber()) {
 			setSilber(getSilber() - bedarf);
 		} else {
@@ -1091,7 +1091,7 @@ public abstract class Region extends Atlantis {
 	public Region Movement(Richtung richtung, Unit unit) {
 		Region r = Region.Load(this.getCoords().shift(richtung));
 
-		// F��r uns nicht!!
+		// Für uns nicht!!
 		if (!Partei.getPartei(unit.getOwner()).canAccess(r)) {
 			new Fehler(unit + " hat Angst vor " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN + "-Regionen.", unit);
 			return null;
@@ -1111,7 +1111,7 @@ public abstract class Region extends Atlantis {
 			}
 		}
 
-		// Bewegungspunkte ��berpr��fen
+		// Bewegungspunkte überprüfen
 		boolean hatStrasse = this.hatStrasse(richtung);
 		int bewegungspunkte = (hatStrasse) ? 1 : 2;
 		if (unit.getBewegungspunkte() < bewegungspunkte) {
@@ -1142,7 +1142,7 @@ public abstract class Region extends Atlantis {
 	/**
 	 * Bewegung einer Einheit durch bzw. aus der Region hinaus
 	 * @param richtung - in die Richtung will die Einheit
-	 * @param ship - und zwar als Kapit��n auf diesem Schiff
+	 * @param ship - und zwar als Kapitän auf diesem Schiff
 	 * @return die neue Region, wo die Einheit nun steht
 	 */
 	public Region Movement(Richtung richtung, Ship ship) {
@@ -1151,7 +1151,7 @@ public abstract class Region extends Atlantis {
 		// in diese Region soll gesegelt werden
 		Region next = Region.Load(this.getCoords().shift(richtung));
 
-		// F��r uns nicht!!
+		// Für uns nicht!!
 		if (!Partei.getPartei(kapitaen.getOwner()).canAccess(next)) {
 			new Fehler(kapitaen + " hat Angst vor " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN + "-Regionen.", kapitaen);
 			return null;
@@ -1159,7 +1159,7 @@ public abstract class Region extends Atlantis {
 
 		// nicht Betretbar
 		if (next.istBetretbar(null)) {
-			// von Land zu Land geht nicht (au��er Kanal, das aber sp��ter)
+			// von Land zu Land geht nicht (außer Kanal, das aber später)
 			if (this.istBetretbar(null)) {
 				new Fehler(kapitaen + " - " + next + " ist kein Ozean.", kapitaen);
 				return null;
@@ -1182,14 +1182,14 @@ public abstract class Region extends Atlantis {
 								minSize = 20;
 							}
 
-							portReqs.add("einen " + building.getSimpleName() + " (Gr����e min. " + minSize + ")");
+							portReqs.add("einen " + building.getSimpleName() + " (Größe min. " + minSize + ")");
 
 							if (!ok) {
 								ok = next.hatGebaeude(building, minSize, kapitaen);
 							}
 						}
 						if (!ok) {
-							new Fehler("Das Schiff " + ship + " kann nur in W��ldern oder Ebenen anlegen; hier w��rde es " + StringUtils.aufzaehlungOder(portReqs) + " ben��tigen.", kapitaen);
+							new Fehler("Das Schiff " + ship + " kann nur in Wäldern oder Ebenen anlegen; hier würde es " + StringUtils.aufzaehlungOder(portReqs) + " benötigen.", kapitaen);
 							return null;
 						}
 						Building building = next.getGebaeude(Seehafen.class);
@@ -1207,21 +1207,21 @@ public abstract class Region extends Atlantis {
 											new Bewegung("Der Seehafen " + building + " unter dem Kommando von " + buildingowner + " erlaubt uns die Einfahrt.", kapitaen);
 										}
 									} else {
-										// der Seehafen geh��rt uns selbst.
+										// der Seehafen gehört uns selbst.
 									}
 								}
 							} else {
-								// Geb��ude hat keine Funktion
+								// Gebäude hat keine Funktion
 								Unit buildingowner = Unit.Load(building.getOwner());
 								if (buildingowner != null) {
-									new Bewegung("Das Schiff " + ship + " konnte anlegen, weil das Geb��ude " + building + " keinen Unterhalt hat.", buildingowner);
+									new Bewegung("Das Schiff " + ship + " konnte anlegen, weil das Gebäude " + building + " keinen Unterhalt hat.", buildingowner);
 								}
 							}
 						} else {
 							// kein Seehafen vorhanden
 						}
 					} else {
-						// Schiff ben��tigt keinen Steg, Hafen oder Seehafen
+						// Schiff benötigt keinen Steg, Hafen oder Seehafen
 					}
 				}
 			}
@@ -1233,7 +1233,7 @@ public abstract class Region extends Atlantis {
 			return null;
 		}
 
-		// Bewegungspunkte ��berpr��fen
+		// Bewegungspunkte überprüfen
 		if (kapitaen.getBewegungspunkte() <= 0) {
 			new Fehler(kapitaen + " schafft keine weitere Reise in die Nachbarregion.", kapitaen);
 			return null;
@@ -1270,8 +1270,8 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * kann diese Region zu Fu��/Pferd durchreist werden
-	 * @param unit das Betreten speziell f��r diese Einheit pr��fen (oder NULL)
+	 * kann diese Region zu Fuß/Pferd durchreist werden
+	 * @param unit das Betreten speziell für diese Einheit prüfen (oder NULL)
 	 * @return TRUE wenn die Region betreten werden kann
 	 */
 	public boolean istBetretbar(Unit unit) {
@@ -1280,7 +1280,7 @@ public abstract class Region extends Atlantis {
 		}
 
 		// Die Region ist zu neu bzw. die Partei sieht diese Region
-		// aus irgendwelchen anderen Gr��nden nicht.
+		// aus irgendwelchen anderen Gründen nicht.
 		if (!Partei.getPartei(unit.getOwner()).canAccess(this)) {
 			return false;
 		}
@@ -1288,7 +1288,7 @@ public abstract class Region extends Atlantis {
 		return true;
 	}
 
-	/** eine Liste aller Nachbar-Regionen. Gibt ggf. auch Chaos mit zur��ck, wo keine Regionen existieren. */
+	/** eine Liste aller Nachbar-Regionen. Gibt ggf. auch Chaos mit zurück, wo keine Regionen existieren. */
 	public List<Region> getNachbarn() {
 		List<Region> retval = new ArrayList<Region>();
 		for (Coords c : getCoords().getNachbarn()) {
@@ -1307,7 +1307,7 @@ public abstract class Region extends Atlantis {
 	/**
 	 * speichert die Region in den CR
 	 * @param writer - passender ReportWriter
-	 * @param partei - die Partei f��r diese Region
+	 * @param partei - die Partei für diese Region
 	 * @param kurz - TRUE wenn keine eigenen Einheiten hier
 	 */
 	public void SaveCR(CRWriter writer, Partei partei, RegionsSicht rs) {
@@ -1382,7 +1382,7 @@ public abstract class Region extends Atlantis {
 				}
 			}
 
-			// ** Geb��ude
+			// ** Gebäude
 			for (Building building : getBuildings()) {
 				building.SaveCR(writer, partei, kurz);
 			}
@@ -1408,7 +1408,7 @@ public abstract class Region extends Atlantis {
 				if (ship.getOwner() != 0) {
 					Unit u = Unit.Load(ship.getOwner());
 					if (u == null) {
-						new SysErr("Kapit��n von Schiff " + ship + " existiert nicht: [" + Codierung.toBase36(ship.getOwner()) + "].");
+						new SysErr("Kapitän von Schiff " + ship + " existiert nicht: [" + Codierung.toBase36(ship.getOwner()) + "].");
 					} else if (!partei.cansee(u)) {
 						writer.wl(0, "Kapitaen");
 					} else {
@@ -1418,7 +1418,7 @@ public abstract class Region extends Atlantis {
 				}
 			}
 
-			// ** Preise f��r Luxus
+			// ** Preise für Luxus
 			if (this.istBetretbar(null) && (this.getClass() != Sandstrom.class)) {
 				// nur in betretbaren Region kann gehandelt werden
 				if (getLuxus().size() > 0) {
@@ -1443,7 +1443,7 @@ public abstract class Region extends Atlantis {
 				writer.wl(resource.getAnzahl(), "number");
 			}
 
-			// ** Grenzen (Stra��en / Feuerwand / etc.)
+			// ** Grenzen (Straßen / Feuerwand / etc.)
 			for (Richtung richtung : Richtung.values()) {
 				if (getStrassensteine(richtung) > 0) {
 					writer.wl("GRENZE " + grenzid++);
@@ -1527,7 +1527,7 @@ public abstract class Region extends Atlantis {
 		xml.ElementShort("recruit", getBauern() / 20);
 		xml.ElementShort("wage", getLohn());
 
-		// Geb��ude
+		// Gebäude
 		if (getBuildings().size() > 0) {
 			xml.ElementStart("buildings");
 		}
@@ -1549,7 +1549,7 @@ public abstract class Region extends Atlantis {
 			xml.ElementEnd();
 		}
 
-		// Handelsg��ter
+		// Handelsgüter
 		if (getLuxus().size() > 0) {
 			xml.ElementStart("merchandise");
 		}
@@ -1611,7 +1611,7 @@ public abstract class Region extends Atlantis {
 	}
 
 	/**
-	 * liefert alle Regionen die zu dieser Insel (bzw. Block) geh��ren
+	 * liefert alle Regionen die zu dieser Insel (bzw. Block) gehören
 	 * @param insel
 	 * @param withOutOcean - TRUE wenn Ozean ignoriert werden sollen
 	 * @return
@@ -1660,9 +1660,9 @@ public abstract class Region extends Atlantis {
 
 	/**
 	 * Erzeugt eine Kopie dieser Region mit einen anderen Terrain-Typ. Das ist
-	 * ��berall dort n��tig, wo zur Laufzeit der Typ und damit die Klasse einer
-	 * Region ver��ndert werden soll.
-	 * @param typ Terrain-Typ der gew��nschten Kopie
+	 * überall dort nötig, wo zur Laufzeit der Typ und damit die Klasse einer
+	 * Region verändert werden soll.
+	 * @param typ Terrain-Typ der gewünschten Kopie
 	 * @return Eine Kopie dieser Region mit dem Terrain-Typ typ
 	 */
 	public Region cloneAs(Class<? extends Region> typ) {
@@ -1676,7 +1676,7 @@ public abstract class Region extends Atlantis {
 			new BigError(ex);
 		}
 
-		// NICHT MEHR? (mit dem sp��ten Setzen der Coords tricksen wir den oben genannten Mechanismus aus.)
+		// NICHT MEHR? (mit dem späten Setzen der Coords tricksen wir den oben genannten Mechanismus aus.)
 		kopie.setCoords(this.getCoords());
 
 		kopie.setName(this.getName());

@@ -790,7 +790,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 
 	/**
 	 * @param gleichesGebaeudeOderSchiff wenn true, muss der potentielle Erbe im gleichen Schiff bzw. Gebäude sein.
-	 * @return eine Liste von Einheiten, die das Erbe (GegenstÃ¤nde, Kommandos über Gebäude und Schiffe) antreten könnten.
+	 * @return eine Liste von Einheiten, die das Erbe (Gegenstände, Kommandos über Gebäude und Schiffe) antreten könnten.
 	 */
 	public SortedSet<Unit> findeErben(boolean gleichesGebaeudeOderSchiff) {
 		// TODO Belagerungen berücksichtigen
@@ -1144,10 +1144,10 @@ public abstract class Unit extends Atlantis implements Comparable {
                 Unit lehrer = lr.getLehrer();
                 if (lehrer.Talentwert(skill) >= Talentwert(skill) + 1) {
                     // COMMAND LERNE <talent>
-                    int consum = getPersonen() * 30 - lehrtage; // bereits vorhandene Lehrtage berÃ¼cksichtigen - Mantis #185
-                    // auf Ã¼brige Lehrtage des Lehrers kÃ¼rzen
+                    int consum = getPersonen() * 30 - lehrtage; // bereits vorhandene Lehrtage berücksichtigen - Mantis #185
+                    // auf übrige Lehrtage des Lehrers kürzen
                     if (consum > lehrer.getLehrtage()) consum = lehrer.getLehrtage();
-                    // auf maximale Lehrtage der SchÃ¼ler kÃ¼rzen
+                    // auf maximale Lehrtage der Schüler kürzen
                     if (lehrtage + consum > getPersonen() * 30) consum = getPersonen() * 30 - lehrtage;
 
                     lehrer.setLehrtage(lehrer.getLehrtage() - consum);
@@ -1234,7 +1234,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		int sn = l / 15;	//	eigentlich (l / 30) * 2 ... gekürzt
 		tw = (int) (-0.5 + Math.sqrt(0.25 + (float) sn));
 
-		// Modifikationen Ã¼ber eine groÃŸe Liste ist nicht! ... das wÃ¼rde
+		// Modifikationen über eine große Liste ist nicht! ... das würde
 		// nur jedesmal sinnlos in Interationen ausarten und CPU verschwenden
 		// es ist effektiver wenn es die Einheit selber macht ... etwa so
 		// 
@@ -1377,7 +1377,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 						new Fehler(ex.getMessage(), temp, temp.getCoords());
 					}
 
-					// alten Befehl aus der Liste der Erzeuger-Einheit lÃ¶schen.
+					// alten Befehl aus der Liste der Erzeuger-Einheit löschen.
 					loeschListe.add(eb);
 				}
 			}
@@ -1618,7 +1618,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	/**
 	 * erzeugt eine neue Einheit
 	 * @param rasse - eine Rasse aus de.x8Bit.Fantasya.Units ... "Races.Mensch" oder "Monsters.Zombie"
-	 * @param owner - gehÃ¶rt zu diesem Volk
+	 * @param owner - gehört zu diesem Volk
 	 * @param c - Koordinaten
 	 * @return eine neue Einheit ohne irgendwas
 	 */
@@ -1629,7 +1629,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	/**
 	 * erzeugt eine neue Einheit
 	 * @param rasse - eine Rasse aus de.x8Bit.Fantasya.Units
-	 * @param owner - gehÃ¶rt zu diesem Volk
+	 * @param owner - gehört zu diesem Volk
 	 * @param x - Koordinaten X
 	 * @param y - Koordinaten Y
 	 * @param welt - Welt
@@ -1660,7 +1660,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	}
 
 	/**
-	 * lÃ¤d die entsprechende Einheit
+	 * läd die entsprechende Einheit
 	 * @param nummer - die Nummer der Einheit
 	 * @return eine Einheit ?!
 	 */
@@ -2391,7 +2391,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		}
 		if (getItem(Elefant.class).getAnzahl() > 0) { setBewegungspunkte(2); reiseVerb.setVerb("wandert"); }
 		
-		// Schiff testen ... falls nicht KapitÃ¤n - aber Schiff soll segeln
+		// Schiff testen ... falls nicht Kapitän - aber Schiff soll segeln
 		if (this.getSchiff() != 0) {
 			Ship ship = Ship.Load(this.getSchiff());
 			if (ship == null) {
@@ -2410,7 +2410,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	}
 	
 	/**
-	 * Ã¼berprÃ¼fen ob die Bewegung Ã¼ber Land mÃ¶glich ist
+	 * überprüfen, ob die Bewegung über Land möglich ist
 	 * @param - diese Einheit hat den Bewegungsbefehl gesetzt
 	 */
 	public boolean checkSegeln(ReiseVerb reiseVerb)
@@ -2421,7 +2421,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 			return false;
 		}
 		
-		// Ã¼berhaupt KapitÃ¤n -- einer am Steuer?
+		// überhaupt Kapitän -- einer am Steuer?
 		Unit owner = Unit.Load(ship.getOwner());
 		if (owner == null) {
 			new Fehler(this + " - das Schiff " + ship + " hat keinen Kapitän.", this);
@@ -2445,13 +2445,13 @@ public abstract class Unit extends Atlantis implements Comparable {
 			return false;
 		}
 		
-		// Talent Ã¼berprÃ¼fen ... KapitÃ¤n
+		// Talent überprüfen ... Kapitän
 		if (this.Talentwert(Segeln.class) < ship.getKapitaenTalent()) {
 			new Fehler(this + " hat keine Ahnung wie er das Schiff " + ship + " segeln soll.", this);
 			return false;
 		}
 		
-		// Talent Ã¼berprÃ¼fen ... Mannschaft (quasi alle der eigenen Partei)
+		// Talent überprüfen ... Mannschaft (quasi alle der eigenen Partei)
 		int talent = 0;
 		for(Unit unit : region.getUnits()) {
 			if ( /* unit.getOwner() == owner.getOwner() && */ unit.getSchiff() == ship.getNummer()) {
@@ -2467,7 +2467,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 			return false;
 		}
 				
-		// Schiffbauer Ã¼berprÃ¼fen ... die sind die Einzigen die es schaffen in einem GebÃ¤ude
+		// Schiffbauer überprüfen ... die sind die Einzigen die es schaffen in einem Gebäude
 		// und einem Schiff gleichzeitig zu sein
 		for(Unit unit : region.getUnits()) {
 			if (unit.getGebaeude() != 0 && unit.getSchiff() == ship.getNummer()) {
