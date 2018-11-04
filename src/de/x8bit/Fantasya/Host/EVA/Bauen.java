@@ -145,7 +145,9 @@ public class Bauen extends EVABase {
 			// Schiffe:
 			if ((variante == 21) || (variante == 22)) {
 				if (u.Talentwert(Schiffbau.class) == 0) {
+					eb.setError();
 					new Fehler(u + " hat keine Ahnung vom Schiffe bauen.", u);
+					continue;
 				}
 			}
 			// MACHE <schifftyp>		-> neues Schiff
