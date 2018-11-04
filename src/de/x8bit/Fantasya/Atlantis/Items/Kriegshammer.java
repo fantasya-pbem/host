@@ -13,7 +13,7 @@ public class Kriegshammer extends Item implements Weapon {
 	public Kriegshammer()
 	{
 		super(100, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Waffenbau.class, 5) } );
+		setConstructionSkill( new ConstructionContainer(Waffenbau.class, 5) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Holz.class, 1), new ConstructionContainer(Eisen.class, 5), new ConstructionContainer(Stein.class, 1) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Schmiede.class, new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 2)}),

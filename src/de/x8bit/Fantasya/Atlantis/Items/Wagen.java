@@ -12,7 +12,7 @@ public class Wagen extends Item
 	public Wagen()
 	{
 		super(4000, 18000);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Wagenbau.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Wagenbau.class, 1) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Holz.class, 5) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Werkstatt.class, new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2)})

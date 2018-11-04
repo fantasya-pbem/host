@@ -12,7 +12,7 @@ public class Bogen extends Item implements Weapon {
 	public Bogen()
 	{
 		super(100, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Bogenbau.class, 3) } );
+		setConstructionSkill( new ConstructionContainer(Bogenbau.class, 3) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Holz.class, 1) } );
 		setConstructionCheats(new ConstructionCheats [] {
 				new ConstructionCheats(Schmiede.class, new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2)})

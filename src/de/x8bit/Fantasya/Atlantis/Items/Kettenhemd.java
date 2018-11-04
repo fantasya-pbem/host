@@ -12,7 +12,7 @@ public class Kettenhemd extends Item
 	public Kettenhemd()
 	{
 		super(200, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Ruestungsbau.class, 2) } );
+		setConstructionSkill( new ConstructionContainer(Ruestungsbau.class, 2) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 3) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Sattlerei.class, new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 2)})

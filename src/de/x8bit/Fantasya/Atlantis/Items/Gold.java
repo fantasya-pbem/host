@@ -11,7 +11,7 @@ public class Gold extends Item implements PersistentResource {
 	public Gold()
 	{
 		super(500, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Bergbau.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Bergbau.class, 1) );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Bergwerk.class, new ConstructionContainer [] { new ConstructionContainer(Gold.class, 2)})
 				});
@@ -21,7 +21,7 @@ public class Gold extends Item implements PersistentResource {
 	{
 		super(500, 0);
 		setAnzahl(anzahl);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Bergbau.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Bergbau.class, 1) );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Bergwerk.class, new ConstructionContainer [] { new ConstructionContainer(Gold.class, 2)}),
 				});

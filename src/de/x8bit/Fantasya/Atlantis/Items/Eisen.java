@@ -12,7 +12,7 @@ public class Eisen extends Item implements PersistentResource {
 	public Eisen()
 	{
 		super(500, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Bergbau.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Bergbau.class, 1) );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Bergwerk.class, new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 2)})
 				});
@@ -22,7 +22,7 @@ public class Eisen extends Item implements PersistentResource {
 	{
 		super(500, 0); // Gewicht, Kapazität
 		setAnzahl(anzahl);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Bergbau.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Bergbau.class, 1) );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Bergwerk.class, new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 2)}),
 				});
