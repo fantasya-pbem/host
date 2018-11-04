@@ -12,7 +12,7 @@ public class Elefantenpanzer extends Item
 	public Elefantenpanzer()
 	{
 		super(5000, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Ruestungsbau.class, 5) } );
+		setConstructionSkill( new ConstructionContainer(Ruestungsbau.class, 5) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 10) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Sattlerei.class, new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 2)})				});

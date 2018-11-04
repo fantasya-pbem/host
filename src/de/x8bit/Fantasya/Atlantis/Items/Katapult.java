@@ -12,7 +12,7 @@ public class Katapult extends Item implements Weapon {
 	public Katapult()
 	{
 		super(6000, 6000);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Wagenbau.class, 3) } );
+		setConstructionSkill( new ConstructionContainer(Wagenbau.class, 3) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Holz.class, 10) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Werkstatt.class, new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2)})

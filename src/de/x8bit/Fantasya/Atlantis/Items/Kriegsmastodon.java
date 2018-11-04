@@ -8,7 +8,7 @@ public class Kriegsmastodon extends Kriegselefant
 {
 	public Kriegsmastodon() {
 		super(); 
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Waffenbau.class, 5) } );
+		setConstructionSkill( new ConstructionContainer(Waffenbau.class, 5) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2), new ConstructionContainer(Mastodon.class, 1), new ConstructionContainer(Mastodonpanzer.class, 1) } );
 	}
 	

@@ -13,7 +13,7 @@ public class Speer extends Item implements Weapon {
 	public Speer()
 	{
 		super(100, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Waffenbau.class, 2) } );
+		setConstructionSkill( new ConstructionContainer(Waffenbau.class, 2) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Holz.class, 1) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Schmiede.class, new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2)})

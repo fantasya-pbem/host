@@ -13,7 +13,7 @@ public class Eisenschild extends Item implements Weapon {
 	public Eisenschild()
 	{
 		super(200, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Ruestungsbau.class, 3) } );
+		setConstructionSkill( new ConstructionContainer(Ruestungsbau.class, 3) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 5) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Sattlerei.class, new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 2)})

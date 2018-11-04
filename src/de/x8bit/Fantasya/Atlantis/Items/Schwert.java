@@ -13,7 +13,7 @@ public class Schwert extends Item implements Weapon {
 	public Schwert()
 	{
 		super(100, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Waffenbau.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Waffenbau.class, 1) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 1) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Schmiede.class, new ConstructionContainer [] { new ConstructionContainer(Eisen.class, 2)})

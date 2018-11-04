@@ -23,7 +23,7 @@ public class Drachenschiff extends Ship
 		// Konstruktion des Schiffes
 		setConstructionSize(100);
 		setConstructionItems( new ConstructionContainer [] { new ConstructionContainer(Holz.class, 1) } );
-		setConstructionSkills( new ConstructionContainer [] { new ConstructionContainer(Schiffbau.class, 2) } );
+		setConstructionSkill( new ConstructionContainer(Schiffbau.class, 2) );
 	}
 	
 	@SuppressWarnings("unchecked")

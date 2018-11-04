@@ -19,13 +19,13 @@ public class Elefant extends Item implements AnimalResource {
 	public Elefant()
 	{
 		super(30000, 60000);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Pferdedressur.class, 2) } );
+		setConstructionSkill( new ConstructionContainer(Pferdedressur.class, 2) );
 	}
 	public Elefant(int anzahl)
 	{
 		super(30000, 60000);
 		setAnzahl(anzahl);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Pferdedressur.class, 2) } );
+		setConstructionSkill( new ConstructionContainer(Pferdedressur.class, 2) );
 	}
 	
 	@Override

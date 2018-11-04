@@ -18,7 +18,7 @@ public class Alpaka extends Kamel
 	public Alpaka() 
 	{
 		super();
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Pferdedressur.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Pferdedressur.class, 1) );
 	}
 	
 	public String getName()

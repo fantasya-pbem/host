@@ -24,7 +24,7 @@ public class Langboot extends Ship
 		// Konstruktion des Schiffes
 		setConstructionSize(50);
 		setConstructionItems( new ConstructionContainer [] { new ConstructionContainer(Holz.class, 1) } );
-		setConstructionSkills( new ConstructionContainer [] { new ConstructionContainer(Schiffbau.class, 1) } );
+		setConstructionSkill(  new ConstructionContainer(Schiffbau.class, 1) );
 	}
 	
 	@SuppressWarnings("unchecked")
