@@ -23,7 +23,7 @@ public class Pferd extends Item implements AnimalResource {
 	public Pferd()
 	{
 		super(5000, 7000);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Pferdedressur.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Pferdedressur.class, 1) );
 	}
 
 	/**

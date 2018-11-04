@@ -17,7 +17,7 @@ public class Holz extends Item implements Resource {
 	public Holz()
 	{
 		super(500, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Holzfaellen.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Holzfaellen.class, 1) );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Saegewerk.class, new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2)})
 				});
@@ -27,7 +27,7 @@ public class Holz extends Item implements Resource {
 	{
 		super(500, 0);
 		setAnzahl(anzahl);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Holzfaellen.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Holzfaellen.class, 1) );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Saegewerk.class, new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2)})
 				});

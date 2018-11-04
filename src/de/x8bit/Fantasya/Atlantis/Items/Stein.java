@@ -12,7 +12,7 @@ public class Stein extends Item implements PersistentResource {
 	public Stein()
 	{
 		super(6000, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Steinbau.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Steinbau.class, 1) );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Steinbruch.class, new ConstructionContainer [] { new ConstructionContainer(Stein.class, 2)})
 				});
@@ -22,7 +22,7 @@ public class Stein extends Item implements PersistentResource {
 	{
 		super(6000, 0);
 		setAnzahl(anzahl);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Steinbau.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Steinbau.class, 1) );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Steinbruch.class, new ConstructionContainer [] { new ConstructionContainer(Stein.class, 2)})
 				});

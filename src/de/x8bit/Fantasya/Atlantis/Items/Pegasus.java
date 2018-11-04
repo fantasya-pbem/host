@@ -13,7 +13,7 @@ public class Pegasus extends Pferd {
         super(5000, 7500);
         
         // Pegasi sind schwer zu fangen:
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Pferdedressur.class, 10) } );
+		setConstructionSkill( new ConstructionContainer(Pferdedressur.class, 10) );
     }
 	
 	@Override

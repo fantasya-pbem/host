@@ -13,7 +13,7 @@ public class Holzschild extends Item implements Weapon {
 	public Holzschild()
 	{
 		super(100, 0);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Ruestungsbau.class, 2) } );
+		setConstructionSkill( new ConstructionContainer(Ruestungsbau.class, 2) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2) } );
 		setConstructionCheats(new ConstructionCheats [] { 
 				new ConstructionCheats(Sattlerei.class, new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2)})

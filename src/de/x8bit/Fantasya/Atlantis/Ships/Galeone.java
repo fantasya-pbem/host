@@ -20,7 +20,7 @@ public class Galeone extends Ship
 		// Konstruktion des Schiffes
 		setConstructionSize(350);
 		setConstructionItems( new ConstructionContainer [] { new ConstructionContainer(Holz.class, 1) } );
-		setConstructionSkills( new ConstructionContainer [] { new ConstructionContainer(Schiffbau.class, 5) } );
+		setConstructionSkill( new ConstructionContainer(Schiffbau.class, 5) );
 	}
 
 	@Override

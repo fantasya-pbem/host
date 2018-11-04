@@ -11,7 +11,7 @@ public class Kriegselefant extends Item implements Weapon {
 	public Kriegselefant()
 	{
 		super(35000, 37000);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Waffenbau.class, 5) } );
+		setConstructionSkill( new ConstructionContainer(Waffenbau.class, 5) );
 		setConstructionItems(new ConstructionContainer [] { new ConstructionContainer(Holz.class, 2), new ConstructionContainer(Elefant.class, 1), new ConstructionContainer(Elefantenpanzer.class, 1) } );
 	}
 	

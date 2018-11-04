@@ -196,12 +196,14 @@ public class ConfigWriter
 				for(ConstructionContainer cc : object.getConstructionItems()) addConstructionFragment("item", cc.getClazz().getSimpleName(), cc.getValue());
 				xml.writeEndElement();
 			}
-			if (object.getConstructionSkills() != null) if (object.getConstructionSkills().length > 0)
+			
+			if (object.getConstructionSkill() != null)
 			{
 				xml.writeStartElement("skills");
-				for(ConstructionContainer cc : object.getConstructionSkills()) addConstructionFragment("skill", cc.getClazz().getSimpleName(), cc.getValue());
+				addConstructionFragment("skill", object.getConstructionSkill().getClazz().getSimpleName(), object.getConstructionSkill().getValue());
 				xml.writeEndElement();
 			}
+			
 			if (object.getConstructionBuildings() != null) if (object.getConstructionBuildings().length > 0)
 			{
 				xml.writeStartElement("buildings");

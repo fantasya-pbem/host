@@ -19,7 +19,7 @@ public class Kamel extends Item implements AnimalResource {
 	public Kamel()
 	{
 		super(4000, 8000);
-		setConstructionSkills(new ConstructionContainer [] { new ConstructionContainer(Pferdedressur.class, 1) } );
+		setConstructionSkill( new ConstructionContainer(Pferdedressur.class, 1) );
 	}
 	
 	@Override

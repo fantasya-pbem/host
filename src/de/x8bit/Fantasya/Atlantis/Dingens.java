@@ -5,7 +5,7 @@ import de.x8bit.Fantasya.Atlantis.Effect.EFXProduction;
 import java.text.NumberFormat;
 
 import de.x8bit.Fantasya.Atlantis.Effect.EFXResourcenCreate;
-import de.x8bit.Fantasya.Atlantis.Effect.EFXResourcenUse;
+import de.x8bit.Fantasya.Atlantis.Effects.EFXMultipleProductionEffect;
 import de.x8bit.Fantasya.Atlantis.Helper.ConstructionCheats;
 import de.x8bit.Fantasya.Atlantis.Helper.ConstructionContainer;
 import de.x8bit.Fantasya.Atlantis.Items.Resource;
@@ -38,9 +38,9 @@ public class Dingens extends Atlantis {
 	public ConstructionContainer [] getConstructionItems() { return neededConstructionItems; }
 
 	/** alle benötigten Talente */
-	private ConstructionContainer [] neededConstructionSkills = null;
-	public void setConstructionSkills(ConstructionContainer [] neededConstructionSkills) { this.neededConstructionSkills = neededConstructionSkills; }
-	public ConstructionContainer [] getConstructionSkills() { return neededConstructionSkills; }
+	private ConstructionContainer neededConstructionSkill = null;
+	public void setConstructionSkill(ConstructionContainer neededConstructionSkill) { this.neededConstructionSkill = neededConstructionSkill; }
+	public ConstructionContainer getConstructionSkill() { return neededConstructionSkill; }
 
 	/** alle benötigten Gebäude */
 	private ConstructionContainer [] neededConstructionBuildings = null;
@@ -95,22 +95,15 @@ public class Dingens extends Atlantis {
 		if (getConstructionSize() == 0) { new Fehler(unit + " kann " + this.getTyp() + " nicht herstellen.", unit, unit.getCoords()); return 0; }	// nö - also zurück
 		
 		// Anzahl überprüfen
-		anzahl = checkConstructionSkill(unit, anzahl, getConstructionSkills());			// über das Talent
-		if (anzahl > 0) anzahl = checkConstructionItem(unit, anzahl, getConstructionItems());			// über die Items
-		if (anzahl > 0) anzahl = checkConstructionBuilding(unit, anzahl, getConstructionBuildings());	// über die Gebäude
+		// 1. Ist eine genügend hohe Fertigkeit vorhanden?
+		anzahl = checkMinConstructionSkill(unit, anzahl, getConstructionSkill());
+		// 2. Sind genügend evtl. benötigte Gegensände vorhanden?
+		if (anzahl > 0) anzahl = checkConstructionItem(unit, anzahl, getConstructionItems());
+		// 3. Ist ein evtl. benötigtes Gebäude vorhanden?
+		if (anzahl > 0) anzahl = checkConstructionBuilding(unit, anzahl, getConstructionBuildings());
+		// 4. Sind genügend Fertigkeitspunkte vorhanden? Vorsicht! Hier werden auch die prozentual verbrauchten Fertigkeitspunkte berechnet und abgezogen. 
+		if (anzahl > 0) anzahl = checkConstructionSkill(unit, anzahl, getConstructionSkill());
 		if (anzahl == 0) return 0;	// Fehlermeldung kam schon
-
-		// EFXProduction: Magieeffekte, die die Produktions-Fähigkeiten steigern
-		for(Effect efx : unit.getEffects()) {
-			if (efx instanceof EFXProduction) {
-				if (this instanceof Item) {
-					anzahl += ((EFXProduction) efx).EFXCalculate(unit, (Item)this, anzahl);
-				} else {
-					// z.B. für Schiffe und Gebäude
-					anzahl += ((EFXProduction) efx).EFXCalculate(unit, null, anzahl);
-				}
-			}
-		}
 		
 		// jetzt die Items "wegnehmen" :)
 		int extra = 0;
@@ -126,16 +119,21 @@ public class Dingens extends Atlantis {
 					new Info(unit + " spart " + ((int)save) + " von " + anzahl * cc.getValue() + " sonst benötigten " + cc.getClazz().getSimpleName() + ".", unit, unit.getCoords());
 				}
 				item.setAnzahl(item.getAnzahl() - (anzahl * cc.getValue() - (int)save));
-				
-				// jetzt die Magieeffekte pro Item
-				for(Effect efx : unit.getEffects()) {
-					if (efx instanceof EFXResourcenUse) extra += ((EFXResourcenUse) efx).EFXCalculate(unit, item, anzahl);
+			}
+			// EFXProduction: Magieeffekte, die die Produktions-Fähigkeiten steigern
+			for(Effect efx : unit.getEffects()) {
+				if (efx instanceof EFXProduction) {
+					if (this instanceof Item) {
+						extra += ((EFXProduction) efx).EFXCalculate(unit, (Item)this, anzahl);
+					} else {
+						// z.B. für Schiffe und Gebäude
+						extra += ((EFXProduction) efx).EFXCalculate(unit, null, anzahl);
+					}
 				}
 			}
-		} else
-		{
-			// eine Resource -> oder Fehler
-			if (this instanceof Resource) {
+		}
+		// eine Resource -> oder Fehler
+		else if (this instanceof Resource) {
 				// gibt es Bewacher, die das nicht zulassen wollen?
                 if (!unit.canRessourcenAbbauen()) {
                     SortedSet<Unit> verhinderer = unit.getVerhinderer(AllianzOption.Resourcen);
@@ -187,49 +185,91 @@ public class Dingens extends Atlantis {
 				// jetzt die Magieeffekte pro Item
 				for(Effect efx : unit.getEffects()) if (efx instanceof EFXResourcenCreate) extra += ((EFXResourcenCreate) efx).EFXCalculate(unit, resource, anzahl);
 			}
+		else
+		{
+			throw new IllegalArgumentException(unit + " möchte " + this.getName() + " produzieren. Dies kann aber nicht produziert werden und sollte vorher abgefangen werden!");
 		}
 		
 		// Produktionsmeldung muss in den entsprechenden Basis-Klassen erstellt werden
 		return anzahl + extra;
 	}
+	
+	@SuppressWarnings("unchecked")
+	private int checkMinConstructionSkill(Unit unit, int anzahl, ConstructionContainer cc) {
+		if (cc == null) return anzahl;
+		
+		Class<? extends Skill> skill = (Class<? extends Skill>) cc.getClazz();
+		
+		// minimaler Talentwert erreicht?
+		if (unit.Talentwert(skill) < cc.getValue())
+		{
+            if (this instanceof Item)
+            {
+                Item it = (Item)this;
+                int alteZahl = it.getAnzahl(); // Ursprungsmenge merken
+                it.setAnzahl(anzahl);
+                if (it instanceof AnimalResource) {
+                    new Fehler(unit + " ist nicht talentiert genug, um " + this.getName() + " fangen zu können. Nötig wäre wenigstens Talentwert " + cc.getValue() + " in " +  skill.getSimpleName() + ".", unit);
+                } else {
+                    new Fehler(unit + " ist nicht talentiert genug, um an " + this.getClass().getSimpleName() + " bauen zu können. Nötig wäre " + skill.getSimpleName() + " "+cc.getValue()+".", unit);
+                }
+                it.setAnzahl(alteZahl); // Ursprungsmenge wieder herstellen
+                return 0;
+            }
+            
+            // hä, kein Item?
+            new Fehler(unit + " ist nicht talentiert genug, um an " + this.getClass().getSimpleName() + " " + anzahl + " bauen zu können. Nötig wäre " + skill.getSimpleName() + " "+cc.getValue()+".", unit);
+			return 0;
+		}
+		
+		
+
+		return anzahl;
+	}
 
 	@SuppressWarnings("unchecked")
-	private int checkConstructionSkill(Unit unit, int anzahl, ConstructionContainer cc []) {
-		if (cc == null) return anzahl;
-		for(int i = 0; i < cc.length; i++)
-		{
-			Class<? extends Skill> skill = (Class<? extends Skill>) cc[i].getClazz();
-			
-			// minimaler Talentwert erreicht?
-			if (unit.Talentwert(skill) < cc[i].getValue()) {
-                if (this instanceof Item) {
-                    Item it = (Item)this;
-                    int alteZahl = it.getAnzahl(); // Ursprungsmenge merken
-                    it.setAnzahl(anzahl);
-                    if (it instanceof AnimalResource) {
-                        new Fehler(unit + " ist nicht talentiert genug, um " + this.getName() + " fangen zu können. Nötig wäre wenigstens Talentwert " + cc[i].getValue() + " in " +  skill.getSimpleName() + ".", unit);
-                    } else {
-                        new Fehler(unit + " ist nicht talentiert genug, um an " + this.getClass().getSimpleName() + " bauen zu können. Nötig wäre " + skill.getSimpleName() + " "+cc[i].getValue()+".", unit);
-                    }
-                    it.setAnzahl(alteZahl); // Ursprungsmenge wieder herstellen
-                    return 0;
-                }
-                
-                // hä, kein Item?
-                new Fehler(unit + " ist nicht talentiert genug, um an " + this.getClass().getSimpleName() + " " + anzahl + " bauen zu können. Nötig wäre " + skill.getSimpleName() + " "+cc[i].getValue()+".", unit);
-				return 0;
-			}
+	private int checkConstructionSkill(Unit unit, int gewuenschteAnzahl, ConstructionContainer cc) {
+		if (cc == null) return gewuenschteAnzahl;
+		
+		EFXMultipleProductionEffect multipleProductionEffect = null;
 
-			// Talentwert / (Talentwert / Größe) => Größe bleibt
-			int min = (unit.Talentwert(skill) * unit.getPersonen()) / cc[i].getValue();
-			if (min < anzahl)
+		Class<? extends Skill> skill = (Class<? extends Skill>) cc.getClazz();
+		
+		// EFXMultipleProduktionEffect: Schon mal verwendete Talentpunkte sollen nicht ein zweites mal verwendet werden.
+		// Mehrmaliges MACHE ist nur bei Gegenständen möglich!
+		if (this instanceof Item)
+		{
+			for(Effect efx : unit.getEffects())
 			{
-				// die Meldung kommt immer - ist also (mehr oder weniger) ein falsches Falsch - deswegen einfach ausblenden
-				// new Fehler("Hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min, unit, unit.getCoords());
-				anzahl = min;
+				if (efx instanceof EFXMultipleProductionEffect)
+				{
+					multipleProductionEffect = (EFXMultipleProductionEffect) efx;
+					break;
+				}
+			}
+			if (multipleProductionEffect == null)
+			{
+				multipleProductionEffect = new EFXMultipleProductionEffect();
+				unit.addEffect(multipleProductionEffect);
 			}
 		}
-		return anzahl;
+		
+		// (Talentwert * Personen * restliche Talentpunkte in %) / benötigtes Talent.
+		int anzahlNachFertigkeit = ((multipleProductionEffect != null) ? multipleProductionEffect.EFXCalculate(unit, skill) : unit.Talentwert(skill) * unit.getPersonen()) / cc.getValue();
+		
+		// int min = (unit.Talentwert(skill) * unit.getPersonen()) / cc[i].getValue();
+		if (anzahlNachFertigkeit < gewuenschteAnzahl)
+		{
+			// die Meldung kommt immer - ist also (mehr oder weniger) ein falsches Falsch - deswegen einfach ausblenden
+			// new Fehler("Hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min, unit, unit.getCoords());
+			gewuenschteAnzahl = anzahlNachFertigkeit;
+		}
+
+		if (multipleProductionEffect != null)
+		{
+			multipleProductionEffect.reducePercent(unit, skill, gewuenschteAnzahl * cc.getValue());
+		}
+		return gewuenschteAnzahl;
 	}
 
 

@@ -24,7 +24,7 @@ public class Plmyvfastap extends Ship {
 		// Konstruktion des Schiffes
 		setConstructionSize(Integer.MAX_VALUE);
 		setConstructionItems( new ConstructionContainer [] { new ConstructionContainer(Holz.class, 1), new ConstructionContainer(Eisen.class, 1), new ConstructionContainer(Stein.class, 1) } );
-		setConstructionSkills( new ConstructionContainer [] { new ConstructionContainer(Schiffbau.class, 6) } );
+		setConstructionSkill( new ConstructionContainer(Schiffbau.class, 6) );
 		setConstructionCheats(new ConstructionCheats []
 		                                              {
 														new ConstructionCheats(Schiffswerft.class, new ConstructionContainer [] {

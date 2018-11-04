@@ -20,7 +20,7 @@ public class Tireme extends Ship
 		// Konstruktion des Schiffes
 		setConstructionSize(200);
 		setConstructionItems( new ConstructionContainer [] { new ConstructionContainer(Holz.class, 1) } );
-		setConstructionSkills( new ConstructionContainer [] { new ConstructionContainer(Schiffbau.class, 5) } );
+		setConstructionSkill( new ConstructionContainer(Schiffbau.class, 5) );
 	}
 
 	@Override
