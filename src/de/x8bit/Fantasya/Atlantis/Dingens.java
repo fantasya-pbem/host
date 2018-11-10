@@ -96,14 +96,17 @@ public class Dingens extends Atlantis {
 		
 		// Anzahl überprüfen
 		// 1. Ist eine genügend hohe Fertigkeit vorhanden?
-		anzahl = checkMinConstructionSkill(unit, anzahl, getConstructionSkill());
+		//    Sind genügend Fertigkeitspunkte vorhanden?
+		anzahl = checkConstructionSkill(unit, anzahl, getConstructionSkill());
 		// 2. Sind genügend evtl. benötigte Gegensände vorhanden?
 		if (anzahl > 0) anzahl = checkConstructionItem(unit, anzahl, getConstructionItems());
 		// 3. Ist ein evtl. benötigtes Gebäude vorhanden?
 		if (anzahl > 0) anzahl = checkConstructionBuilding(unit, anzahl, getConstructionBuildings());
-		// 4. Sind genügend Fertigkeitspunkte vorhanden? Vorsicht! Hier werden auch die prozentual verbrauchten Fertigkeitspunkte berechnet und abgezogen. 
-		if (anzahl > 0) anzahl = checkConstructionSkill(unit, anzahl, getConstructionSkill());
 		if (anzahl == 0) return 0;	// Fehlermeldung kam schon
+		
+		// Hier werden die prozentual verbrauchten Fertigkeitspunkte abgezogen.
+		reduceProduktionPointsOfMultiMache(unit, anzahl, getConstructionSkill());
+		
 		
 		// jetzt die Items "wegnehmen" :)
 		int extra = 0;
@@ -194,48 +197,10 @@ public class Dingens extends Atlantis {
 		return anzahl + extra;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private int checkMinConstructionSkill(Unit unit, int anzahl, ConstructionContainer cc) {
-		if (cc == null) return anzahl;
+	private EFXMultipleProductionEffect getEFXMultipleProductionEffectOfUnit(Unit unit)
+	{
+		if (unit == null) { return null; }
 		
-		Class<? extends Skill> skill = (Class<? extends Skill>) cc.getClazz();
-		
-		// minimaler Talentwert erreicht?
-		if (unit.Talentwert(skill) < cc.getValue())
-		{
-            if (this instanceof Item)
-            {
-                Item it = (Item)this;
-                int alteZahl = it.getAnzahl(); // Ursprungsmenge merken
-                it.setAnzahl(anzahl);
-                if (it instanceof AnimalResource) {
-                    new Fehler(unit + " ist nicht talentiert genug, um " + this.getName() + " fangen zu können. Nötig wäre wenigstens Talentwert " + cc.getValue() + " in " +  skill.getSimpleName() + ".", unit);
-                } else {
-                    new Fehler(unit + " ist nicht talentiert genug, um an " + this.getClass().getSimpleName() + " bauen zu können. Nötig wäre " + skill.getSimpleName() + " "+cc.getValue()+".", unit);
-                }
-                it.setAnzahl(alteZahl); // Ursprungsmenge wieder herstellen
-                return 0;
-            }
-            
-            // hä, kein Item?
-            new Fehler(unit + " ist nicht talentiert genug, um an " + this.getClass().getSimpleName() + " " + anzahl + " bauen zu können. Nötig wäre " + skill.getSimpleName() + " "+cc.getValue()+".", unit);
-			return 0;
-		}
-		
-		
-
-		return anzahl;
-	}
-
-	@SuppressWarnings("unchecked")
-	private int checkConstructionSkill(Unit unit, int gewuenschteAnzahl, ConstructionContainer cc) {
-		if (cc == null) return gewuenschteAnzahl;
-		
-		EFXMultipleProductionEffect multipleProductionEffect = null;
-
-		Class<? extends Skill> skill = (Class<? extends Skill>) cc.getClazz();
-		
-		// EFXMultipleProduktionEffect: Schon mal verwendete Talentpunkte sollen nicht ein zweites mal verwendet werden.
 		// Mehrmaliges MACHE ist nur bei Gegenständen möglich!
 		if (this instanceof Item)
 		{
@@ -243,21 +208,61 @@ public class Dingens extends Atlantis {
 			{
 				if (efx instanceof EFXMultipleProductionEffect)
 				{
-					multipleProductionEffect = (EFXMultipleProductionEffect) efx;
-					break;
+					return (EFXMultipleProductionEffect) efx;
 				}
 			}
-			if (multipleProductionEffect == null)
-			{
-				multipleProductionEffect = new EFXMultipleProductionEffect();
-				unit.addEffect(multipleProductionEffect);
-			}
 		}
+		return null;
+	}
+
+	/**
+	 * @param unit
+	 * @param anzahl
+	 * @param constructionSkill
+	 */
+	@SuppressWarnings("unchecked")
+	private void reduceProduktionPointsOfMultiMache(Unit unit, int gewuenschteAnzahl, ConstructionContainer cc) {
+		if (cc == null) return;
+		
+		EFXMultipleProductionEffect multipleProductionEffect = getEFXMultipleProductionEffectOfUnit(unit);
+
+		Class<? extends Skill> skill = (Class<? extends Skill>) cc.getClazz();
+		
+		if (multipleProductionEffect != null)
+		{
+			multipleProductionEffect.reducePercent(unit, skill, gewuenschteAnzahl * cc.getValue());
+		}
+	}
+	@SuppressWarnings("unchecked")
+	private int checkConstructionSkill(Unit unit, int gewuenschteAnzahl, ConstructionContainer cc) {
+		if (cc == null) return gewuenschteAnzahl;
+
+		Class<? extends Skill> skill = (Class<? extends Skill>) cc.getClazz();
+		
+		// minimaler Talentwert erreicht?
+		if (unit.Talentwert(skill) < cc.getValue())
+		{
+            if (this instanceof Item)
+            {
+                if (this instanceof AnimalResource) {
+                    new Fehler(unit + " ist nicht talentiert genug, um " + this.getName() + " fangen zu können. Nötig wäre wenigstens Talentwert " + cc.getValue() + " in " +  skill.getSimpleName() + ".", unit);
+                } else {
+                    new Fehler(unit + " ist nicht talentiert genug, um an " + this.getClass().getSimpleName() + " bauen zu können. Nötig wäre " + skill.getSimpleName() + " "+cc.getValue()+".", unit);
+                }
+                return 0;
+            }
+            
+            // hä, kein Item?
+            new Fehler(unit + " ist nicht talentiert genug, um an " + this.getClass().getSimpleName() + " " + gewuenschteAnzahl + " bauen zu können. Nötig wäre " + skill.getSimpleName() + " "+cc.getValue()+".", unit);
+			return 0;
+		}
+		
+		// EFXMultipleProduktionEffect: Schon mal verwendete Talentpunkte sollen nicht ein zweites mal verwendet werden.
+		EFXMultipleProductionEffect multipleProductionEffect = getEFXMultipleProductionEffectOfUnit(unit);
 		
 		// (Talentwert * Personen * restliche Talentpunkte in %) / benötigtes Talent.
 		int anzahlNachFertigkeit = ((multipleProductionEffect != null) ? multipleProductionEffect.EFXCalculate(unit, skill) : unit.Talentwert(skill) * unit.getPersonen()) / cc.getValue();
 		
-		// int min = (unit.Talentwert(skill) * unit.getPersonen()) / cc[i].getValue();
 		if (anzahlNachFertigkeit < gewuenschteAnzahl)
 		{
 			// die Meldung kommt immer - ist also (mehr oder weniger) ein falsches Falsch - deswegen einfach ausblenden
@@ -265,10 +270,6 @@ public class Dingens extends Atlantis {
 			gewuenschteAnzahl = anzahlNachFertigkeit;
 		}
 
-		if (multipleProductionEffect != null)
-		{
-			multipleProductionEffect.reducePercent(unit, skill, gewuenschteAnzahl * cc.getValue());
-		}
 		return gewuenschteAnzahl;
 	}
 
