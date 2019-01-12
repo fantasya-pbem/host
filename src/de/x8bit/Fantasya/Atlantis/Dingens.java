@@ -107,7 +107,6 @@ public class Dingens extends Atlantis {
 		// Hier werden die prozentual verbrauchten Fertigkeitspunkte abgezogen.
 		reduceProduktionPointsOfMultiMache(unit, anzahl, getConstructionSkill());
 		
-		
 		// jetzt die Items "wegnehmen" :)
 		int extra = 0;
 		if (getConstructionItems() != null)
@@ -211,6 +210,8 @@ public class Dingens extends Atlantis {
 					return (EFXMultipleProductionEffect) efx;
 				}
 			}
+			// Ein EFXMultiProductionEffect ist nicht vorhanden. Erstellen und der Einheit zuweisen.
+			unit.addEffect(new EFXMultipleProductionEffect());
 		}
 		return null;
 	}
