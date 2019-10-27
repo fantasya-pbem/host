@@ -2382,14 +2382,17 @@ public abstract class Unit extends Atlantis implements Comparable {
 			int reitenFree = gesamteFreieKapazitaet(true); // true = beritten
 			if (reitenFree >= 0) {
 				if (getItem(Pegasus.class).getAnzahl() > 0) { setBewegungspunkte(6); reiseVerb.setVerb("fliegt"); }
-				if (getItem(Greif.class).getAnzahl() > 0) 		{ setBewegungspunkte(10); reiseVerb.setVerb("fliegt"); }
-				if (getItem(Flugdrache.class).getAnzahl() > 0)	{ setBewegungspunkte(10); reiseVerb.setVerb("fliegt"); }
+				if (getItem(Greif.class).getAnzahl() > 0) { setBewegungspunkte(10); reiseVerb.setVerb("fliegt"); }
+				if (getItem(Flugdrache.class).getAnzahl() > 0) { setBewegungspunkte(10); reiseVerb.setVerb("fliegt"); }
 				if (getItem(Pferd.class).getAnzahl() > 0) { setBewegungspunkte(canRideAnimals() ? 4 : 2); reiseVerb.setVerb("reitet"); }
+				if (getItem(Zotte.class).getAnzahl() > 0) { setBewegungspunkte(canRideAnimals() ? 4 : 2); reiseVerb.setVerb("reitet"); }
 				if (getItem(Einhorn.class).getAnzahl() > 0) { setBewegungspunkte(canRideAnimals() ? 4 : 2); reiseVerb.setVerb("reitet"); }
 				if (getItem(Kamel.class).getAnzahl() > 0) { setBewegungspunkte(canRideAnimals() ? 4 : 2); reiseVerb.setVerb("führt die Karawane"); }
+				if (getItem(Alpaka.class).getAnzahl() > 0) { setBewegungspunkte(canRideAnimals() ? 4 : 2); reiseVerb.setVerb("führt die Karawane"); }
 			}
 		}
 		if (getItem(Elefant.class).getAnzahl() > 0) { setBewegungspunkte(2); reiseVerb.setVerb("wandert"); }
+		if (getItem(Mastodon.class).getAnzahl() > 0) { setBewegungspunkte(2); reiseVerb.setVerb("wandert"); }
 		
 		// Schiff testen ... falls nicht Kapitän - aber Schiff soll segeln
 		if (this.getSchiff() != 0) {

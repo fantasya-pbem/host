@@ -1,6 +1,7 @@
 /.idea
-
 /bin/*
 /lib/*
+/lib-fuer-bin
 
 /fantasya.jar
+/fantasya_[0-9-]*.jar
