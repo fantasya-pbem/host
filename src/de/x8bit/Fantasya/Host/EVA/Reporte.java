@@ -24,13 +24,14 @@ import java.util.List;
 
 public class Reporte extends EVABase implements NotACommand
 {
+	public static boolean withMonster = true;
+
 	private List<Partei> spieler;
 
 	/**
 	 * für jede betretbare Region wird hier ein Wert in die Datenreihe aufgenommen: (Regions-)Silber pro (Bauern-)Kopf
 	 */
 	protected static StatSerie SilberProBauer = new StatSerie();
-
 
 	public static TopSkillCache TopSkillCache = null;
 	
@@ -85,6 +86,11 @@ public class Reporte extends EVABase implements NotACommand
 		new SysMsg(nSpieler + " Spieler- und " + nMonster + " NPC-Parteien gefunden.");
 
 		for(Partei p : spieler) {
+			if (!withMonster) {
+				new SysMsg("Partei " + p.getNummerBase36() + " (Monster) wird übersprungen.");
+				continue;
+			}
+
 			new SysMsg("Reporte für " + p + ", " + GameRules.getRunde());
 
 			new ReportCR(p);

@@ -14,6 +14,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
 import de.x8bit.Fantasya.Host.EVA.EVABase;
+import de.x8bit.Fantasya.Host.EVA.Reporte;
 import de.x8bit.Fantasya.Host.EVA.util.EVAFastLoader;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.Host.GUI.MainFrame;
@@ -53,6 +54,7 @@ public class Main
 	// private static String args_testworld = null;
 	// private static boolean args_verify = false;
 	private static boolean args_clrmessages = false;
+	private static boolean args_ohnemonster = false;
 	private static boolean args_reporte = false;
 	// private static boolean args_email = false;
 	private static boolean args_newplayers = false;
@@ -65,7 +67,7 @@ public class Main
 
 	
 	/** aktuelle Fantasya Version */
-	public static String FANTAVERSION = "0.17";
+	public static String FANTAVERSION = "1.0.0";
 
 	public final static long start = System.currentTimeMillis();
 	
@@ -150,7 +152,7 @@ public class Main
 	/** <br>
 	 * Fantasya 2 - das nächste Zeitalter<br>
 	 * Copyright (C) 2007-2010 by Ronny Gorzelitz<br>
-	 * Copyright (C) 2010 by AGPL<br>
+	 * License: GNU Affero General Public License<br>
 	 * <br>
 	 * <br>
 	 * <br>
@@ -218,6 +220,7 @@ public class Main
 			if (args[i].compareToIgnoreCase("-passwort") == 0) Datenbank.SetPasswort(args[i + 1]);
 			if (args[i].compareToIgnoreCase("-newplayers") == 0) args_newplayers = true;
 			if (args[i].compareToIgnoreCase("-testcase") == 0) new TestCase();
+			if (args[i].compareToIgnoreCase("-ohnemonster") == 0) args_ohnemonster = true;
 			if (args[i].compareToIgnoreCase("-reporte") == 0) args_reporte = true;
 			if (args[i].compareToIgnoreCase("-crmap") == 0) args_crmap = true;
 			if (args[i].compareToIgnoreCase("-bugfix") == 0) args_bugfix = true;
@@ -299,7 +302,8 @@ public class Main
 			if (args_debug) {
 				ZATMode.CurrentMode().setDebug(true);
 			}
-			try{
+			try {
+				Reporte.withMonster = !args_ohnemonster;
 				EVABase.ZAT();
 			} catch(Exception ex) {
 				new BigError(ex);
@@ -348,6 +352,7 @@ public class Main
 				  "                     ACHTUNG: Vorher besser die aktuellen Daten sichern!\n" +
 				  "                     In Verbindung mit 'debug' kann die Auswertung getestet\n" +
 				  "                     werden, ohne dass Reporte an die Spieler geschickt werden.\n");
+		sb.append("ohnemonster          überspringt das Erzeugen der Reporte für die Monsterparteien\n");
 		sb.append("reporte              schreibt die Reporte für alle Spieler neu\n");
 		sb.append("befehlscheck         prüft neu eingegangene Befehle mittels eines ZAT-\n" +
 				  "                     Trockenlaufs (Read-Only)\n");
