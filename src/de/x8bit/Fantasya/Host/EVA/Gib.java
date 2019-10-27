@@ -828,8 +828,8 @@ public class Gib extends EVABase {
 				// #19 - Fehlermeldung bei LIEFERE unterdrücken
 				if (!isLiefere) {
 					new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoords());
-					eb.setError();
 				}
+				eb.setError();
 				continue;
 			}
 
