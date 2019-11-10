@@ -86,7 +86,7 @@ public class Reporte extends EVABase implements NotACommand
 		new SysMsg(nSpieler + " Spieler- und " + nMonster + " NPC-Parteien gefunden.");
 
 		for(Partei p : spieler) {
-			if (!withMonster) {
+			if (!withMonster && p.isMonster()) {
 				new SysMsg("Partei " + p.getNummerBase36() + " (Monster) wird übersprungen.");
 				continue;
 			}
