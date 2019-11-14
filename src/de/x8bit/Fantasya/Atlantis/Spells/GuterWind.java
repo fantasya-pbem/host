@@ -8,7 +8,6 @@ import de.x8bit.Fantasya.Atlantis.Helper.Elementar;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.Magie;
-import de.x8bit.Fantasya.Host.Main;
 import de.x8bit.Fantasya.util.Codierung;
 
 public class GuterWind extends Spell {

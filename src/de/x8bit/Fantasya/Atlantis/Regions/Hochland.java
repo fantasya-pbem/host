@@ -1,8 +1,5 @@
 package de.x8bit.Fantasya.Atlantis.Regions;
 
-import java.awt.image.BufferedImage;
-
-
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Items.Eisen;
 import de.x8bit.Fantasya.Atlantis.Items.Elefant;
@@ -48,8 +45,6 @@ public class Hochland extends Region
 		r = Random.rnd(-20,20); if (r < 0) r = 0; setResource(Eisen.class, r);
 		r = Random.rnd(-20,20); if (r < 0) r = 0; setResource(Stein.class, r);
 	}
-	
-	private static BufferedImage image = null;
 
 	/**
 	 * liefert die noch freien Arbeitsplätze

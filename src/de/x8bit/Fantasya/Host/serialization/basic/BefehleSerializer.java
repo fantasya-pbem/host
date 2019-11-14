@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.Host.serialization.basic;
 
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
-import de.x8bit.Fantasya.util.StringUtils;
 
 import java.util.Collection;
 import java.util.HashMap;

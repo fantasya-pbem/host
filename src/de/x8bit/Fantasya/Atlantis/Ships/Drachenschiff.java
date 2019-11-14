@@ -10,6 +10,7 @@ import de.x8bit.Fantasya.Atlantis.Skills.Schiffbau;
 import de.x8bit.Fantasya.util.ComplexName;
 import de.x8bit.Fantasya.Atlantis.Unit;
 
+@SuppressWarnings("rawtypes")
 public class Drachenschiff extends Ship
 {
 

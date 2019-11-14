@@ -20,12 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unchecked")
 public class HammerDerGoetter extends Spell {
 
 	private final static Map<Class<? extends Region>, Class<? extends Region>> TRANSFORMATIONS;
+
 	static {
-		TRANSFORMATIONS = new HashMap();
+		TRANSFORMATIONS = new HashMap<Class<? extends Region>, Class<? extends Region>>();
 		TRANSFORMATIONS.put(Wald.class, Sumpf.class);
 		TRANSFORMATIONS.put(Ebene.class, Sumpf.class);
 		TRANSFORMATIONS.put(Wueste.class, Sumpf.class);
@@ -117,7 +117,7 @@ public class HammerDerGoetter extends Spell {
 					b.setSize(newSize);
 				}
 
-				List<String> ereignisse = new ArrayList();
+				List<String> ereignisse = new ArrayList<String>();
 				ereignisse.add("In " + r + " beschwor " + mage + " den Hammer der Götter. Der Boden senkte sich permanent");
 				if (tote > 0) ereignisse.add(tote + " Bauern starben");
 				if (gebaeudeSchaden) ereignisse.add("alle Gebaeude nahmen beträchtlichen Schaden");
@@ -137,7 +137,7 @@ public class HammerDerGoetter extends Spell {
 				}
 				// das Ertrinken wird in SpielerLoeschen erledigt.
 
-				List<String> ereignisse = new ArrayList();
+				List<String> ereignisse = new ArrayList<String>();
 				ereignisse.add("In " + r + " beschwor " + mage + " den Hammer der Götter. Das Land wird nun vom Meer verschlungen");
 				if (tote > 0) ereignisse.add(tote + " Bauern ertrinken");
 				if (gebaeudeSchaden) ereignisse.add("alle Gebaeude sind verloren");

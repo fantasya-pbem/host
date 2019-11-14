@@ -34,7 +34,6 @@ import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Units.Greif;
 import de.x8bit.Fantasya.Atlantis.Welt;
 import de.x8bit.Fantasya.Host.EVA.Umwelt.BauernWanderung;
-import de.x8bit.Fantasya.Host.EVA.Umwelt.BaumAussaat;
 import de.x8bit.Fantasya.Host.EVA.Umwelt.TierWanderung;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;

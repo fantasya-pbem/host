@@ -14,12 +14,11 @@ import de.x8bit.Fantasya.Atlantis.Regions.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("unchecked")
 public class ProvokationDerTitanen extends Spell {
 
 	private final static Map<Class<? extends Region>, Class<? extends Region>> TRANSFORMATIONS;
 	static {
-		TRANSFORMATIONS = new HashMap();
+		TRANSFORMATIONS = new HashMap<Class<? extends Region>, Class<? extends Region>>();
 		TRANSFORMATIONS.put(Ozean.class, Sumpf.class);
 		TRANSFORMATIONS.put(Sumpf.class, Wueste.class);
 		TRANSFORMATIONS.put(Ebene.class, Hochland.class);

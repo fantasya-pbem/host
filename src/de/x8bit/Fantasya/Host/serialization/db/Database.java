@@ -7,10 +7,6 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 /** Provides slightly more convenient access to a database.
  *
  * This class intends to provide a weak facade to the SQL interface in the Java

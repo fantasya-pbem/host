@@ -128,7 +128,6 @@ public class Reisen {
 			
 			// Abriften durch Sturm
 			if (r instanceof Ozean) {
-				Ozean o = (Ozean)r;
 				int value = ((Ozean) r).getSturmValue();
 				int monat[] = new int[] { 1, 2, 1, 1, 0, 0, 0, 0, 1, 2, 3, 2 };
 				value += monat[GameRules.getJahreszeit()];

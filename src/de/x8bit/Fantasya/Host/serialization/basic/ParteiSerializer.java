@@ -7,7 +7,6 @@ import java.util.Set;
 import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
-import de.x8bit.Fantasya.util.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

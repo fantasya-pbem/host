@@ -136,10 +136,10 @@ public class MigrationSerializerFactory {
 
 	/** Assemble a DatabaseAdapter from the contact information. */
 	private static Adapter buildDatabaseAdapter(Datenbank db) {
-		String url = "jdbc:mysql://" + db.GetServer() + "/" + db.GetDatenbank();
+		String url = "jdbc:mysql://" + Datenbank.GetServer() + "/" + Datenbank.GetDatenbank();
 		MysqlDataSource source = new MysqlDataSource();
 		source.setURL(url);
 
-		return new DatabaseAdapter( new Database(source, db.GetBenutzer(), db.GetPasswort()) );
+		return new DatabaseAdapter( new Database(source, Datenbank.GetBenutzer(), Datenbank.GetPasswort()) );
 	}
 }

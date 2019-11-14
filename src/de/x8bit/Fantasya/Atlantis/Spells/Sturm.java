@@ -7,13 +7,10 @@ import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Helper.Elementar;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Spell.ConfusionSpell;
-import de.x8bit.Fantasya.Host.Main;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Krieger;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Side;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Effects.BFXSturm;
 import de.x8bit.Fantasya.Host.ZAT.Battle.KriegerCounter;
-import de.x8bit.Fantasya.Host.ZAT.Battle.Weapons.WArmbrust;
-import de.x8bit.Fantasya.Host.ZAT.Battle.Weapons.WBogen;
 import de.x8bit.Fantasya.util.Random;
 import java.util.List;
 

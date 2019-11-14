@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Atlantis.Units;
 
-import de.x8bit.Fantasya.Atlantis.Atlantis;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Unit;

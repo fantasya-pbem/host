@@ -14,6 +14,7 @@ import de.x8bit.Fantasya.Atlantis.Unit;
  * @author mogel
  *
  */
+@SuppressWarnings("rawtypes")
 public class Boot extends Ship
 {
 	public Boot()

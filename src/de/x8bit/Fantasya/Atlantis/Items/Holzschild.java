@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Atlantis.Items;
 
-import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Buildings.Sattlerei;
 import de.x8bit.Fantasya.Atlantis.Helper.ConstructionCheats;
