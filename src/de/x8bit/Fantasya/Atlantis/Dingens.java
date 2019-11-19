@@ -267,7 +267,7 @@ public class Dingens extends Atlantis {
 		if (anzahlNachFertigkeit < gewuenschteAnzahl)
 		{
 			// die Meldung kommt immer - ist also (mehr oder weniger) ein falsches Falsch - deswegen einfach ausblenden
-			// new Fehler("Hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min, unit, unit.getCoords());
+			// new Fehler("Hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min + ".", unit, unit.getCoords());
 			gewuenschteAnzahl = anzahlNachFertigkeit;
 		}
 
@@ -284,7 +284,11 @@ public class Dingens extends Atlantis {
 			int min = getAvailableItems(unit, (Class<? extends Item>) cc[i].getClazz()) / cc[i].getValue();
 			if (min < anzahl)
 			{
-				new Fehler(unit + " hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min, unit, unit.getCoords());
+				if (anzahl == Integer.MAX_VALUE) {
+					new Fehler(unit + " hat ausreichend " + cc[i].getClazz().getSimpleName() + ", um " + min + " Punkte bauen zu können.", unit, unit.getCoords());
+				} else {
+					new Fehler(unit + " hat nicht genügend " + cc[i].getClazz().getSimpleName() + ", um " + anzahl + " Punkte bauen zu können, reduziert auf " + min + ".", unit, unit.getCoords());
+				}
 				anzahl = min;
 			}
 		}

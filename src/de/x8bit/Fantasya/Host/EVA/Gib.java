@@ -771,7 +771,11 @@ public class Gib extends EVABase {
 			Unit u = eb.getUnit();
 //			Partei p = Partei.getPartei(u.getOwner());
 
-			if ("liefere".equalsIgnoreCase(eb.getTokens()[0])) eb.setKeep(true);
+			boolean isLiefere = false;
+			if ("liefere".equalsIgnoreCase(eb.getTokens()[0])) {
+				isLiefere = true;
+				eb.setKeep(true);
+			}
 
 			int variante = eb.getVariante();
 			Unit targetUnit = null;
@@ -821,7 +825,10 @@ public class Gib extends EVABase {
 			}
 			
 			if (!targetUnit.getCoords().equals(u.getCoords())) {
-				new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoords());
+				// #19 - Fehlermeldung bei LIEFERE unterdrücken
+				if (!isLiefere) {
+					new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoords());
+				}
 				eb.setError();
 				continue;
 			}
