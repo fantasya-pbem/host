@@ -154,7 +154,7 @@ public class Reisen {
 				// wenn an Land, dann Küste beachten
 				if (r.istBetretbar(null) && ship.getKueste() != null) {
 					if (!richtung.equals(ship.getKueste()))	{
-						new Fehler("Das Schiff " + ship + " ankert an der Küste im " + ship.getKueste().name() + " und kann daher nicht nach " + richtung.name() + " fahren.", u, passagiere);
+						new Fehler("Das Schiff " + ship + " ankert an der Küste im " + ship.getKueste().name() + " und kann daher nicht nach " + richtung.name() + " fahren.", u, u.getPassengers());
 						cansail = false;
 					}
 				}
