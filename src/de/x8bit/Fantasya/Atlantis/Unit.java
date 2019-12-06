@@ -1605,7 +1605,22 @@ public abstract class Unit extends Atlantis implements Comparable {
 		
 		return hunger;
 	}
-	
+
+	/**
+	 * Liefert die Passagiere, wenn die Einheit Schiffskapitän ist.
+	 * 
+	 * @return SortedSet<Unit>
+	 */
+	public SortedSet<Unit> getPassengers() {
+		if (getSchiff() == 0) {
+			return new TreeSet<Unit>();
+		}
+		Ship ship = Ship.Load(getSchiff());
+		SortedSet<Unit> passengers = ship.getUnits();
+		passengers.remove(this);
+		return passengers;
+	}
+
 	// --------------------------------------------------------------------------------------------------------------------------
 
 	/**

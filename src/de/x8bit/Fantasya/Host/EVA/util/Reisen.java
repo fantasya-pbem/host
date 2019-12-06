@@ -63,9 +63,7 @@ public class Reisen {
 			if (u.checkSegeln(reiseVerb)) {
 				reise = Reisen.Segeln(eb);
 				// Passagiere ermitteln für Bewegungsmeldungen
-				Ship ship = Ship.Load(u.getSchiff());
-				passagiere = ship.getUnits();
-				passagiere.remove(u);
+				passagiere = u.getPassengers();
             }
         }
 
@@ -102,10 +100,6 @@ public class Reisen {
 		Unit u = eb.getUnit();
 		// mit diesem Schiff soll gesegelt werden:
 		Ship ship = Ship.Load(u.getSchiff());
-		// Passagiere ermitteln für Bewegungsmeldungen
-		SortedSet<Unit> passagiere = ship.getUnits();
-		passagiere.remove(u);
-
 		// Startregion
 		Region r = Region.Load(u.getCoords());
 
@@ -147,7 +141,7 @@ public class Reisen {
 				int monat[] = new int[] { 1, 2, 1, 1, 0, 0, 0, 0, 1, 2, 3, 2 };
 				value += monat[GameRules.getJahreszeit()];
 				if (Random.rnd(0, 100) < value) {
-					new Bewegung(u + " wird beim Segeln durch den Sturm abgetrieben.", u, passagiere);
+					new Bewegung(u + " wird beim Segeln durch den Sturm abgetrieben.", u, u.getPassengers());
 					richtung = richtung.randomNachbar();
 				}
 			}
@@ -172,14 +166,14 @@ public class Reisen {
                        if (b instanceof Seehafen) {
                            Unit hafenmeister = Unit.Load(b.getOwner());
                            if (hafenmeister == null) {
-                               new Fehler("Der Seehafen in " + ziel + " hat keinen Hafenmeister, das Anlegen scheitert.", u, passagiere);
+                               new Fehler("Der Seehafen in " + ziel + " hat keinen Hafenmeister, das Anlegen scheitert.", u, u.getPassengers());
                         	   cansail = false;
                         	   continue;
                            }
                            if (hafenmeister.getOwner() == u.getOwner()) continue; // eigene Partei ist okay.
                            Partei other = Partei.getPartei(hafenmeister.getOwner());
                            if (!other.hatAllianz(u.getOwner(), AllianzOption.Kontaktiere)) {
-                                new Fehler("Der Seehafen in " + ziel + " lässt uns nicht anlegen.", u, passagiere);
+                                new Fehler("Der Seehafen in " + ziel + " lässt uns nicht anlegen.", u, u.getPassengers());
                                 cansail = false;
                            }
                        }
