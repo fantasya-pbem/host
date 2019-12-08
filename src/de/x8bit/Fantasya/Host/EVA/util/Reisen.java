@@ -21,6 +21,7 @@ import de.x8bit.Fantasya.util.Random;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 /**
  *
@@ -51,7 +52,8 @@ public class Reisen {
         // ist gedacht, um in den check... Routinen das passende Bewegungsverb
 		// für die Meldung setzen zu können:
 		ReiseVerb reiseVerb = new ReiseVerb("reist");
-        List<Region> reise = null;
+		List<Region> reise = null;
+		SortedSet<Unit> passagiere = null;
         if (u.getSchiff() == 0) { // kein Kapitän
             // über Land
             if (u.checkLand(reiseVerb)) reise = Reisen.Laufen(eb);
@@ -59,13 +61,21 @@ public class Reisen {
             // Segeln
             reiseVerb.setVerb("schippert");
 			if (u.checkSegeln(reiseVerb)) {
-                reise = Reisen.Segeln(eb);
+				reise = Reisen.Segeln(eb);
+				// Passagiere ermitteln für Bewegungsmeldungen
+				passagiere = u.getPassengers();
             }
         }
 
         // Reise dokumentieren
         if (reise != null) {
 			u.ReiseDoku(reise, reiseVerb.getVerb());
+			// Bei Schiffsreisen auch für die Passagiere dokumentieren.
+			if (passagiere != null) {
+				for (Unit passagier : passagiere) {
+					passagier.ReiseDoku(reise, "reist");
+				}
+			}
 			for(int i = 1; i < reise.size(); i++) {
 				Region r = reise.get(i);
 				Reisen.RegistriereDurchReise(r, u);
@@ -90,7 +100,6 @@ public class Reisen {
 		Unit u = eb.getUnit();
 		// mit diesem Schiff soll gesegelt werden:
 		Ship ship = Ship.Load(u.getSchiff());
-
 		// Startregion
 		Region r = Region.Load(u.getCoords());
 
@@ -114,7 +123,6 @@ public class Reisen {
 				auftraege = ZieleZuSchritten(eb); // quasi ein "Schattenbefehl" - die konkrete Umsetzung des Koordinatenauftrags
 			}
 
-
 			// Bewachen aufheben
 			for(Unit unit : ship.getUnits())	{
 				if (unit.getBewacht()) {
@@ -133,7 +141,7 @@ public class Reisen {
 				int monat[] = new int[] { 1, 2, 1, 1, 0, 0, 0, 0, 1, 2, 3, 2 };
 				value += monat[GameRules.getJahreszeit()];
 				if (Random.rnd(0, 100) < value) {
-					new Bewegung(u + " wird beim Segeln durch den Sturm abgetrieben.", u);
+					new Bewegung(u + " wird beim Segeln durch den Sturm abgetrieben.", u, u.getPassengers());
 					richtung = richtung.randomNachbar();
 				}
 			}
@@ -146,7 +154,7 @@ public class Reisen {
 				// wenn an Land, dann Küste beachten
 				if (r.istBetretbar(null) && ship.getKueste() != null) {
 					if (!richtung.equals(ship.getKueste()))	{
-						new Fehler("Das Schiff " + ship + " ankert an der Küste im " + ship.getKueste().name() + " und kann daher nicht nach " + richtung.name() + " fahren.", u);
+						new Fehler("Das Schiff " + ship + " ankert an der Küste im " + ship.getKueste().name() + " und kann daher nicht nach " + richtung.name() + " fahren.", u, u.getPassengers());
 						cansail = false;
 					}
 				}
@@ -158,14 +166,14 @@ public class Reisen {
                        if (b instanceof Seehafen) {
                            Unit hafenmeister = Unit.Load(b.getOwner());
                            if (hafenmeister == null) {
-                               new Fehler("Der Seehafen in " + ziel + " hat keinen Hafenmeister, das Anlegen scheitert.", u);
+                               new Fehler("Der Seehafen in " + ziel + " hat keinen Hafenmeister, das Anlegen scheitert.", u, u.getPassengers());
                         	   cansail = false;
                         	   continue;
                            }
                            if (hafenmeister.getOwner() == u.getOwner()) continue; // eigene Partei ist okay.
                            Partei other = Partei.getPartei(hafenmeister.getOwner());
                            if (!other.hatAllianz(u.getOwner(), AllianzOption.Kontaktiere)) {
-                                new Fehler("Der Seehafen in " + ziel + " lässt uns nicht anlegen.", u);
+                                new Fehler("Der Seehafen in " + ziel + " lässt uns nicht anlegen.", u, u.getPassengers());
                                 cansail = false;
                            }
                        }

@@ -1,5 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Messages;
 
+import java.util.SortedSet;
+
 import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -22,5 +24,13 @@ public class Bewegung extends Message
 	{
 		super();
 		print(0, msg, partei, c);
+	}
+
+	public Bewegung(String msg, Unit u, SortedSet<Unit> passagiere)
+	{
+		this(msg, u);
+		for (Unit unit : passagiere) {
+			new Bewegung(msg, unit);
+		}
 	}
 }

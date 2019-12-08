@@ -1,5 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Messages;
 
+import java.util.SortedSet;
+
 import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -33,4 +35,10 @@ public class Fehler extends Message
 
 	}
 
+	public Fehler(String msg, Unit u, SortedSet<Unit> passagiere) {
+		this(msg, u, u.getCoords());
+		for (Unit unit : passagiere) {
+			new Fehler(msg, unit);
+		}
+	}
 }
