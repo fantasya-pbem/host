@@ -23,7 +23,7 @@ public class Burg extends Building {
 		return true;
 	} // Burgen müssen nur anwesend sein
 
-	/** 
+	/**
 	 * der Name der Burg ist abhängig von der Anzahl
 	 * der verbauten Steine
 	 */
@@ -51,8 +51,8 @@ public class Burg extends Building {
 		}
 		return "Megapolis";
 	}
-	
-	/** 
+
+	/**
 	 * die Größe der Burg ist abhängig von der Anzahl
 	 * der verbauten Steine
 	 */
@@ -80,7 +80,7 @@ public class Burg extends Building {
 		}
 		return 8;
 	}
-	
+
 
 	/**
 	 * @return der Bonus, der auf AV und DV der Insassen angewendet wird
@@ -103,9 +103,6 @@ public class Burg extends Building {
 		}
 		if (getSize() < 6250) {
 			return 4;
-		}
-		if (getSize() < 31250) {
-			return 5;
 		}
 		return 5;
 	}
