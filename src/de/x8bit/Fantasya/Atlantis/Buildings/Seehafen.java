@@ -16,17 +16,17 @@ public class Seehafen extends Building
 {
 	public void Zerstoere(Unit u)
 	{
-		super.Zerstoere(u, new Item [] {  new Stein(7), new Eisen(5), new Holz(5)  });	
+		super.Zerstoere(u, new Item [] {  new Stein(7), new Eisen(5), new Holz(5)  });
 	}
-	
+
 	public String getTyp() { return "Seehafen"; }
-	
+
 	public int GebaeudeUnterhalt() { return 300; }
-	
+
 	public boolean hatFunktion()
 	{
 		if (getSize() < 20) return false;
-		return super.hatFunktion(); 
+		return super.hatFunktion();
 	}
 
 	/**
@@ -39,18 +39,18 @@ public class Seehafen extends Building
 		int tw = u.Talentwert(Burgenbau.class);
 		if (tw < 5)
 		{
-			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoords());
+			new Fehler(u + " hat nicht genügend Talent, um an " + this + " zu bauen.", u, u.getCoords());
 			return;
 		}
-		
+
 		// zusätzlichen Gebäude testen
 		Region region = Region.Load(u.getCoords());
-		if (!region.hatGebaeude(Burg.class, 50, u))
+		if (!region.hatGebaeude(Burg.class, 250, u))
 		{
-			new Fehler(u + " - in " + region + " fehlt ein Schloss um " + getTyp() + " bauen zu können", u, u.getCoords());
+			new Fehler(u + " in " + region + " fehlt eine Festung, um " + getTyp() + " bauen zu können.", u, u.getCoords());
 			return;
 		}
-		
+
 		GenericMake(u, 20, Burgenbau.class, 5, new Item [] { new Stein(10), new Eisen(10), new Holz(10), new Silber(500) } );
 	}
 
