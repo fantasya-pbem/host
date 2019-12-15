@@ -23,7 +23,7 @@ public class Burg extends Building {
 		return true;
 	} // Burgen müssen nur anwesend sein
 
-	/** 
+	/**
 	 * der Name der Burg ist abhängig von der Anzahl
 	 * der verbauten Steine
 	 */
@@ -43,10 +43,16 @@ public class Burg extends Building {
 		if (getSize() < 1250) {
 			return "Festung";
 		}
-		return "Zitadelle";
+		if (getSize() < 6250) {
+			return "Zitadelle";
+		}
+		if (getSize() < 31250) {
+			return "Akropolis";
+		}
+		return "Megapolis";
 	}
-	
-	/** 
+
+	/**
 	 * die Größe der Burg ist abhängig von der Anzahl
 	 * der verbauten Steine
 	 */
@@ -66,9 +72,15 @@ public class Burg extends Building {
 		if (getSize() < 1250) {
 			return 5;
 		}
-		return 6;
+		if (getSize() < 6250) {
+			return 6;
+		}
+		if (getSize() < 31250) {
+			return 7;
+		}
+		return 8;
 	}
-	
+
 
 	/**
 	 * @return der Bonus, der auf AV und DV der Insassen angewendet wird
@@ -89,7 +101,10 @@ public class Burg extends Building {
 		if (getSize() < 1250) {
 			return 3;
 		}
-		return 4;
+		if (getSize() < 6250) {
+			return 4;
+		}
+		return 5;
 	}
 
 	/**
@@ -147,7 +162,13 @@ public class Burg extends Building {
 		if (getSize() < 1250) {
 			return 5;
 		}
-		return 6;
+		if (getSize() < 6250) {
+			return 7;
+		}
+		if (getSize() < 31250) {
+			return 10;
+		}
+		return 15;
 	}
 
 	/** berechnet den erreichbaren Lohn in der Region */
@@ -167,7 +188,13 @@ public class Burg extends Building {
 		if (getSize() < 1250) {
 			return 15;
 		}
-		return 16;
+		if (getSize() < 6250) {
+			return 16;
+		}
+		if (getSize() < 31250) {
+			return 17;
+		}
+		return 18;
 	}
 
 	/**

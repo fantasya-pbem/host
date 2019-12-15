@@ -94,17 +94,16 @@ public class ReportCR
 		writer.wl("VERSION 64");
 		writer.wl("utf-8", "charset");
 		writer.wl("de", "locale");
-		writer.wl("fantasya", "Spiel");
+		writer.wl("Fantasya", "Spiel");
 		writer.wl(0, "noskillpoints");					// auch wenn der Wert als Default gilt
 		writer.wl(date, "date");
-		writer.wl("Standart", "Konfiguration");
+		//writer.wl("Standart", "Konfiguration"); // was ist das?
 		writer.wl(BuildInformation.getBuild(), "buildid");
 		writer.wl("Hex", "Koordinaten");
 		writer.wl(36, "Basis");
 		writer.wl(GameRules.getRunde(), "Runde");
 		writer.wl(2, "Zeitalter");
 		writer.wl("befehle@fantasya-pbem.de", "mailto");
-		// writer.wl(Main.GameID + "@fantasya-pbem.de", "mailto");
 		writer.wl("Fantasya Befehle", "mailcmd");
 		
 		// Partei-Header ... diese Partei erhält den Report
