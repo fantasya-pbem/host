@@ -45,9 +45,9 @@ public class Seehafen extends Building
 
 		// zusätzlichen Gebäude testen
 		Region region = Region.Load(u.getCoords());
-		if (!region.hatGebaeude(Burg.class, 250, u))
+		if (!region.hatGebaeude(Burg.class, 50, u))
 		{
-			new Fehler(u + " in " + region + " fehlt eine Festung, um " + getTyp() + " bauen zu können.", u, u.getCoords());
+			new Fehler(u + " in " + region + " fehlt ein Schloss, um " + getTyp() + " bauen zu können.", u, u.getCoords());
 			return;
 		}
 
