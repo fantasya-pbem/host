@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Atlantis.Messages;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;

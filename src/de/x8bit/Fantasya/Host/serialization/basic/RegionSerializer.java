@@ -3,7 +3,6 @@ package de.x8bit.Fantasya.Host.serialization.basic;
 import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
-import de.x8bit.Fantasya.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;

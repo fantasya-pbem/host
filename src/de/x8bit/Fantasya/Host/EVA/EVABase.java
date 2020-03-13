@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,6 @@ import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.ComplexName;
 import de.x8bit.Fantasya.util.comparator.UnitSortierungComparator;
-import fantasya.library.io.order.DirectoryOrderReader;
 
 import java.util.Collections;
 import java.util.HashSet;

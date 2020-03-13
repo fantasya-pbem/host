@@ -21,7 +21,6 @@ import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
-import de.x8bit.Fantasya.Atlantis.Regions.Chaos;
 import de.x8bit.Fantasya.Atlantis.Steuer;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.Datenbank;
@@ -137,6 +136,7 @@ public class EVAFastLoader {
 		db.Close();
     }
 
+	/*
 	private static int loadRegionenProperties(Datenbank db) throws SQLException {
 		// Parteien-Properties:
         db.CreateSelect("property_regionen", "e");
@@ -157,6 +157,7 @@ public class EVAFastLoader {
 
 		return cnt;
 	}
+	*/
 
 	public static void loadParteien(Datenbank db) throws SQLException {
 		// Parteien, konsequent ohne .Load() etc.

@@ -18,7 +18,6 @@ import de.x8bit.Fantasya.Host.EVA.util.InselVerwaltung;
 import de.x8bit.Fantasya.Host.EVA.util.InselVerwaltung.Insel;
 import de.x8bit.Fantasya.Host.BuildInformation;
 import de.x8bit.Fantasya.Host.GameRules;
-import de.x8bit.Fantasya.Host.Main;
 import de.x8bit.Fantasya.Host.Paket;
 import de.x8bit.Fantasya.Host.Reports.Writer.CRWriter;
 import de.x8bit.Fantasya.Host.Reports.util.CoordComparatorLNR;

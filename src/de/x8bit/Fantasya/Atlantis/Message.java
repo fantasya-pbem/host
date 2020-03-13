@@ -35,6 +35,7 @@ import java.util.TreeSet;
  * 
  * @author  mogel
  */
+@SuppressWarnings("rawtypes")
 public class Message {
     private static SortedSet<Class<? extends Message>> Arten;
 	protected static Map<String, Class<? extends Message>> ART_KEY;
@@ -184,7 +185,7 @@ public class Message {
 
 			if ((cnt % EVAFastSaver.ROWS_PER_INSERT) == 0) {
 				db.myQuery = EVAFastSaver.makeQuery("meldungen", proto.getDBValues(), values);
-				int result = db.Update();
+				db.Update();
 
 				values = new StringBuffer();
 			}

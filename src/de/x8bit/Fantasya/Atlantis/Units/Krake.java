@@ -16,7 +16,6 @@ import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Weapons.MKrakenarm;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.Random;
-import java.util.ArrayList;
 
 public class Krake extends Monster {
 	

@@ -1,12 +1,8 @@
 package de.x8bit.Fantasya.Atlantis.Regions;
 
 import de.x8bit.Fantasya.Atlantis.Coords;
-import de.x8bit.Fantasya.Atlantis.Unit;
-
-import java.awt.image.BufferedImage;
-
-
 import de.x8bit.Fantasya.Atlantis.Region;
+import de.x8bit.Fantasya.Atlantis.Unit;
 
 public class Chaos extends Region
 {
@@ -37,7 +33,4 @@ public class Chaos extends Region
 	
 	@Override
 	public boolean canNachfrage() { return false; }
-	
-	private static BufferedImage image = null;
-	
 }

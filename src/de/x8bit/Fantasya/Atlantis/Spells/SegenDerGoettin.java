@@ -10,7 +10,6 @@ import de.x8bit.Fantasya.Atlantis.Messages.Magie;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.*;
 
-@SuppressWarnings("unchecked")
 public class SegenDerGoettin extends Spell {
 
 	@Override

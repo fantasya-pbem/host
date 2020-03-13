@@ -16,7 +16,6 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Schiffbau;
 import de.x8bit.Fantasya.Atlantis.Units.Aquaner;
-import de.x8bit.Fantasya.Host.Main;
 import de.x8bit.Fantasya.Host.Reports.Writer.XMLWriter;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.FreieNummern;
@@ -65,8 +64,6 @@ public abstract class Ship extends Dingens implements NamedItem {
 	
 	public static Ship Load(int nummer)
 	{
-		Ship s = null;
-		
 		for(int i = 0; i < PROXY.size(); i++) {
 			if (PROXY.get(i) != null && PROXY.get(i).getNummer() == nummer) {
 				return PROXY.get(i);

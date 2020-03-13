@@ -4,13 +4,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -24,10 +22,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
-import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
-import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.GameRules;
-import de.x8bit.Fantasya.Host.EVA.util.BefehlsCheck;
 import de.x8bit.Fantasya.Host.EVA.util.BefehlsMuster;
 import de.x8bit.Fantasya.Host.EVA.util.BefehlsMuster.Art;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
@@ -186,6 +181,7 @@ public class BefehleEinlesen extends EVABase
 		return retval;
 	}
 
+	/*
 	private void kopieren(String srcFile, String dstFile) {
 		try {
 			File dst = new File(dstFile);
@@ -209,12 +205,13 @@ public class BefehleEinlesen extends EVABase
 			new BigError(ex);
 		}
 	}
+	*/
 
-	/**
+	/*
      * <p>Löscht nach dem Einlesen der Befehle alle Quelldateien in inboxDirectory
      * NICHT in befehleDirectory, die Dateien dort bleiben also für eine mögliche Wiederhoung der AW
      * erhalten.</p>
-     */
+     *
     private void InboxLeeren() {
         File src = new File(inboxDirectory);
         if (!src.exists()) {
@@ -230,7 +227,7 @@ public class BefehleEinlesen extends EVABase
 			}
         }
 	}
-
+	*/
 
     /** liest alle Befehle ein */
 	private void LoadBefehle() {

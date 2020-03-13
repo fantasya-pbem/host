@@ -11,6 +11,6 @@ package de.x8bit.Fantasya.Host;
 public class BuildInformation {
 
 	public static String getBuild() {
-		return new String("191214");
+		return new String("2020313");	// wird auf dem Server ersetzt
 	}
 }
