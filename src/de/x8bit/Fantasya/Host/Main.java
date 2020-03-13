@@ -67,7 +67,7 @@ public class Main
 
 	
 	/** aktuelle Fantasya Version */
-	public static String FANTAVERSION = "1.0.0";
+	public static String FANTAVERSION = "1.1.1";
 
 	public final static long start = System.currentTimeMillis();
 	
