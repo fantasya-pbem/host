@@ -61,7 +61,6 @@ import de.x8bit.Fantasya.util.StringUtils;
  * hmmm ... eine Region?!
  * @author  mogel
  */
-@SuppressWarnings("rawtypes")
 public abstract class Region extends Atlantis {
 
 	static {
@@ -1751,7 +1750,6 @@ public abstract class Region extends Atlantis {
 	@Override
 	public int getOwner() {
 		Building biggest = null;
-		int owner = 0;
 		for(Building b : getBuildings()) {
 			if (b instanceof Burg) {
 				if (biggest == null) {

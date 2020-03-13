@@ -1,6 +1,7 @@
 /.idea
-/bin/*
-/lib/*
+/.settings
+/bin
+/lib
 /lib-fuer-bin
 
 /fantasya.jar

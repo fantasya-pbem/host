@@ -5,7 +5,6 @@ import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Items.Silber;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
-import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.util.ComplexName;
 
 public class Kraeuterkunde extends Skill {

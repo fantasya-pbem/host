@@ -51,7 +51,7 @@ public enum Kampfposition
 	}
 	
 	/**
-	 * wandelt zwischen Fantasya und Eressea/Magellen
+	 * wandelt zwischen Fantasya und Eressea/Magellan
 	 * @param kp - Kampfposition
 	 * @return int für Magellan
 	 */
@@ -59,13 +59,13 @@ public enum Kampfposition
 	{
 		switch(kp)
 		{
-			case Aggressiv:	return 0;			// aggrerssiv
-			case Vorne:		return 1;			// nicht, Variante A (lt. Fremd-Doku!)
-			// case Vorne:		return 3;			// defensiv
-			case Nicht:		return 4;			// nicht, Variante B
-			case Fliehe:	return 5;			// fliehe
-			case Hinten:	return 2;			// hinten
+			case Aggressiv:	return 0; // aggrerssiv
+			case Vorne:		return 1; // nicht, Variante A (lt. Fremd-Doku!)
+			// case Vorne:		return 3; // defensiv
+			case Nicht:		return 4; // nicht, Variante B
+			case Fliehe:	return 5; // fliehe
+			case Hinten:	return 2; // hinten
+			default:        return 1; // oder 4 ?!
 		}
-		return 1;								// oder 4 ?!
 	}
 }

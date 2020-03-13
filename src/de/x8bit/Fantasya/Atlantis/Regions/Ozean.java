@@ -1,8 +1,5 @@
 package de.x8bit.Fantasya.Atlantis.Regions;
 
-import java.awt.image.BufferedImage;
-
-
 import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -55,9 +52,7 @@ public class Ozean extends Region
 		if (unit != null) if (unit.canSwim()) return true; 
 		return false; 
 	}
-	
-	private static BufferedImage image = null;
-	
+		
 	/**
 	 * liefert die noch freien Arbeitsplätze
 	 * @return freien Arbeitsplätze

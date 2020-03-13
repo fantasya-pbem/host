@@ -24,7 +24,6 @@ import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.util.StringUtils;
 import de.x8bit.Fantasya.util.UnitList;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;

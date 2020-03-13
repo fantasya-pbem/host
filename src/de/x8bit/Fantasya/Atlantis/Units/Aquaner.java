@@ -32,7 +32,6 @@ import de.x8bit.Fantasya.Atlantis.Skills.Unterhaltung;
 import de.x8bit.Fantasya.Atlantis.Skills.Waffenbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Wagenbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
-import de.x8bit.Fantasya.util.Random;
 
 public class Aquaner extends Unit	// SKILL
 {
