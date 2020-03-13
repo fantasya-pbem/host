@@ -40,7 +40,7 @@ import de.x8bit.Fantasya.Host.Reports.Zipping;
 /*
  *  ungültige FK's finden ... Tabellen- und Spaltennamen anpassen nicht vergessen
  *  SELECT * FROM tabelle1 t1 WHERE t1.spalte > 0 AND NOT EXISTS (SELECT NULL FROM tabelle2 t2 WHERE t2.spalte = t1.spalte)
- *  
+ *
  */
 
 public class Main
@@ -63,18 +63,18 @@ public class Main
 	private static boolean args_config = false;
 	private static int args_X = -1;
 	public static String GameID = "00000000";
-	
 
-	
+
+
 	/** aktuelle Fantasya Version */
-	public static String FANTAVERSION = "1.1.1";
+	public static String FANTAVERSION = "1.1.2";
 
 	public final static long start = System.currentTimeMillis();
-	
-	
-	
-	/** 
-	 * alle Flags die über Commando-Zeile gesetzt werden können<br/><br/> 	 
+
+
+
+	/**
+	 * alle Flags die über Commando-Zeile gesetzt werden können<br/><br/>
 	 * <table>
 	 * <tr><th>Flag</th><th>Type</th><th>Beschreibung</th></tr>
 	 * <tr><td>OverrideVersion</td><td>String</td><td>Überschreibt die aktuelle Fantasya-Version</td></tr>
@@ -82,7 +82,7 @@ public class Main
 	 * </table>
 	 */
 	private static Map<String, Object> flags = new HashMap<String, Object>();
-	
+
 	/** holt ein entsprechendes Flag bzw. fügt ein unbenutzes mit einem Default-Wert ein */
 	private static Object getFlag(String name, Object value)
 	{
@@ -90,7 +90,7 @@ public class Main
 		flags.put(name, value);
 		return value;
 	}
-	
+
 	/** liefert den Wert des Flags als String */
 	public static String getSFlag(String name)
 	{
@@ -98,7 +98,7 @@ public class Main
 		if (value == null) return "";
 		return value.toString();
 	}
-	
+
 	/** liefert den Wert des Flags als Integer */
 	public static int getIFlag(String name)
 	{
@@ -108,9 +108,9 @@ public class Main
 		try { number = Integer.parseInt(value.toString()); } catch(Exception ex) { return 0; }
 		return number;
 	}
-	
-	/** 
-	 * liefert den Wert des Flags als Boolean ... 
+
+	/**
+	 * liefert den Wert des Flags als Boolean ...
 	 * es wird für alle Flags TRUE geliefert, wenn er nicht dem Default-Wert entspricht
 	 */
 	public static boolean getBFlag(String name)
@@ -123,7 +123,7 @@ public class Main
 		if (value.getClass().equals(String.class)) try { if (getSFlag(name).length() > 0) bool = true; } catch(Exception ex) { return false; }
 		return bool;
 	}
-	
+
 	/** zeigt alle Flags */
 	public static void listUsedFlags()
 	{
@@ -134,7 +134,7 @@ public class Main
 			new SysMsg(" - " + key + "=" + value );
 		}
 	}
-	
+
 	/** zerlegt alle übergebenen Flags */
 	private static void parseFlags(String args_flags)
 	{
@@ -146,9 +146,9 @@ public class Main
 			System.out.println(" - '" + part[0] + "' mit Wert '"+ part[1] + "'");
 		}
 	}
-	
-	
-	
+
+
+
 	/** <br>
 	 * Fantasya 2 - das nächste Zeitalter<br>
 	 * Copyright (C) 2007-2010 by Ronny Gorzelitz<br>
@@ -192,7 +192,7 @@ public class Main
 		// wenn man das Tool "SizeOf" benutzen will, muss ein Argument für den Aufruf der JVM (!) eingebunden werden:
 		// java .... -javaagent:<path to>/SizeOf.jar
 		// (Wunderwerke der Technik!)
-		// 
+		//
 		// net.sourceforge.sizeof.SizeOf - configuration steps (available in sizeOf.jar)
 		// SizeOf.skipStaticField(true);
 		// SizeOf.setMinSizeToLog(10*1000*1000);
@@ -202,7 +202,7 @@ public class Main
 		// EVA wird ab heute (18.04.2011) immer bevorzug - um den alten Modus zu erzwingen
 		// einfach "-flags EVA=false" an die Zeile hängen
 		flags.put("EVA", "true"); // System.out.println("erzwinge EVA-Auswertung");
-		
+
 		// alle Flags einlesen
 		for(int i = 0; i < args.length; i++) {
 			if (args[i].compareToIgnoreCase("-gui") == 0) args_gui = true;
@@ -250,7 +250,7 @@ public class Main
             System.err.println("-verify kann nur zusammen mit -testworld verwendet werden!");
             System.exit(-1);
         }*/
-		
+
 		// new SysMsg(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date()) + " - es geht los!");
 
 		// Klassen-Daten einlesen
@@ -265,7 +265,7 @@ public class Main
 
 		// Fantasya-Version ggf. überschreiben
 		if (getBFlag("OverrideVersion")) FANTAVERSION = getSFlag("OverrideVersion");
-		
+
 		// ggf. Initialisieren - also Tabllen anlegen
 		if (args_initdb) { Datenbank db = new Datenbank("InitDB"); db.InitDB(FANTAVERSION); db.Close(); return; }
 
@@ -429,16 +429,16 @@ public class Main
 
         if (tw.shouldContinueWithZAT()) {
             args_zat = true;
-            
+
             if (!Main.getBFlag("EVA")) args_debug = true; // damit nicht die Befehle überschrieben werden.
         }
 	} */
-	
+
 	/**
 	 * repariert irgend ein blöden <b><u><i>katastrophalen</i></u></b> Fehler
 	 */
 	private static void BugFix()
-	{	
+	{
 /*		new SysMsg("starte BugFix");
 		Datenbank db = new Datenbank("Bugfix");
 		db.myQuery = "SELECT * FROM einheiten";
@@ -448,9 +448,9 @@ public class Main
 			while(rs.next())
 			{
 				Unit unit = Unit.Load(rs.getInt("nummer"));
-				try 
+				try
 				{
-					unit.Save();					
+					unit.Save();
 				} catch(Exception ex)
 				{
 					Datenbank.ListQueryStack();
@@ -460,40 +460,40 @@ public class Main
 		{
 			new BigError(e);
 		}
-		
+
 		db.Close();
-		
+
 		new SysMsg("beende BugFix");
-		
+
 		System.exit(0);
 */
 	}
-	
+
 	/**
 	 * *juhu* neue Spieler
 	 */
 	private static void NeueSpieler()
 	{
 		new SysMsg("SYSTEM Start - setze neue Spieler aus");
-		
+
 		Zipping.salz = Datenbank.Select("SELECT value FROM settings WHERE name = 'game.salt'", "00");
-		
+
 		// Runde laden
 		GameRules.Load();
-		
+
 		// weil ja eigentlich schon die nächste Runde existiert
 		GameRules.setRunde(GameRules.getRunde() - 1);
-		
+
 		// die ReporteSchreiben schreiben
 		new NeueSpieler();
-		
+
 		// falls irgend wann mal der GC Blödsinn wieder aufhört
 		// und ein Destruktor existiert
 		GameRules.setRunde(GameRules.getRunde() + 1);
-		
+
 		new SysMsg("SYSTEM Quit - neue Spieler fertig");
 	}
-	
+
 	/**
 	 * schreibt alle ReporteSchreiben nochmal für die Spieler
 	 */
@@ -501,7 +501,7 @@ public class Main
 	{
 		// Runde laden
 		GameRules.Load();
-        
+
         try {
             EVAFastLoader.loadAll();
         } catch (SQLException ex) {
@@ -509,7 +509,7 @@ public class Main
         }
 
 		Zipping.salz = Datenbank.Select("SELECT value FROM settings WHERE name = 'game.salt'", "00");
-		
+
 		// die ReporteSchreiben schreiben
 		new ZATMsg("erstelle Reporte");
 		GameRules.setRunde(GameRules.getRunde()); // -> turn of database is turn of report
@@ -518,14 +518,14 @@ public class Main
 
 		new SysMsg("SYSTEM Quit - Reporte neu geschrieben");
 	}
-	
+
 	/**
 	 * erstellt eine CR-Map von der DB ... dabei werden aber keine Einheiten etc. mit ausgegeben
 	 */
 	private static void CRMap()
 	{
 		new SysMsg("SYSTEM Start - CR-Map");
-		
+
 		FileWriter file;
 		Datenbank db = new Datenbank("CR-Map");
 		db.myQuery = "SELECT koordx, koordy, welt, name, typ, insel FROM regionen";
@@ -533,7 +533,7 @@ public class Main
 		try
 		{
 			file = new FileWriter("world.cr", false);
-			
+
 			// Basis-Header
 			file.write("VERSION 64\n");
 			file.write("\"de\";locale\n");
@@ -559,13 +559,13 @@ public class Main
 			file.flush();
 			file.close();
 		} catch(Exception ex) { new BigError(ex); }
-		
+
 		new SysMsg("erzeuge XML-Map");
 		new ReportXML(new Partei());
-		
+
 		new SysMsg("SYSTEM Quit - CR-Map -> 'world.cr'");
 	}
-	
+
 	/**
 	 * etwas Werbung muss sein
 	 */
@@ -573,7 +573,7 @@ public class Main
 	{
 		System.out.println("Fantasya 2 - Version " + FANTAVERSION);
 		System.out.println("Copyright (C) 2007-2009 - x8Bit.de");
-		System.out.println("Copyright (C) 2010 by AGPL\n");
+		System.out.println("Copyright (C) 2010-2020 by AGPL\n");
 		System.out.println();
 	}
 
